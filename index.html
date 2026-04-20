@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Werk van Waarde — Quick Scan Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=DM+Serif+Display:ital@0;1&display=swap');
+
+  :root {
+    --navy:   #0F1F3D;
+    --blue:   #1B4FD8;
+    --mid:    #3B6EE8;
+    --light:  #E8EFFE;
+    --green:  #1A9959;
+    --lgreen: #D4F0E4;
+    --orange: #D4680A;
+    --lorange:#FDE8CE;
+    --red:    #C0392B;
+    --lred:   #FAD9D5;
+    --grey:   #F4F5F8;
+    --border: #DDE1EC;
+    --text:   #0F1F3D;
+    --muted:  #6B7494;
+    --white:  #FFFFFF;
+    --cat-leren:     #EEF2FF;
+    --cat-autonomie: #F0FBF4;
+    --cat-relaties:  #FFFBEB;
+    --cat-zinvol:    #F5F0FF;
+    --cat-werkdruk:  #FFF0EE;
+    --cat-werktijd:  #F0FBFA;
+    --cat-beloning:  #FFF7ED;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #F0F2F8;
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── UPLOAD SCREEN ─────────────────────────────────────────────── */
+  #upload-screen {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: linear-gradient(145deg, #0A1628 0%, #1B3A6B 50%, #0F2952 100%);
+  }
+
+  .upload-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.6rem;
+    color: #fff;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.25rem;
+  }
+  .upload-logo span { color: #7BA7F7; font-style: italic; }
+
+  .upload-tagline {
+    color: #8AACDC;
+    font-size: 0.95rem;
+    font-weight: 300;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 3rem;
+  }
+
+  .upload-card {
+    background: rgba(255,255,255,0.06);
+    border: 1.5px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 3rem 3.5rem;
+    width: 100%;
+    max-width: 520px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+  }
+
+  .drop-zone {
+    border: 2px dashed rgba(123,167,247,0.5);
+    border-radius: 14px;
+    padding: 2.5rem 2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: rgba(123,167,247,0.04);
+  }
+  .drop-zone:hover, .drop-zone.dragover {
+    border-color: #7BA7F7;
+    background: rgba(123,167,247,0.1);
+  }
+  .drop-icon {
+    width: 56px; height: 56px;
+    background: rgba(123,167,247,0.15);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.25rem;
+    font-size: 1.6rem;
+  }
+  .drop-title {
+    color: #fff;
+    font-size: 1.05rem;
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+  }
+  .drop-sub {
+    color: #8AACDC;
+    font-size: 0.85rem;
+  }
+  #file-input { display: none; }
+
+  .upload-btn {
+    margin-top: 1.5rem;
+    width: 100%;
+    padding: 0.85rem;
+    background: #1B4FD8;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .upload-btn:hover { background: #2460F0; }
+
+  .upload-note {
+    margin-top: 1.25rem;
+    color: #6B8AB5;
+    font-size: 0.78rem;
+    line-height: 1.6;
+  }
+
+  /* ── DASHBOARD ─────────────────────────────────────────────────── */
+  #dashboard { display: none; }
+
+  .top-bar {
+    background: var(--navy);
+    color: #fff;
+    padding: 0 2rem;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  }
+  .top-bar-brand {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem;
+    letter-spacing: -0.01em;
+  }
+  .top-bar-brand span { color: #7BA7F7; font-style: italic; }
+  .top-bar-meta { font-size: 0.8rem; color: #8AACDC; display: flex; gap: 1.5rem; align-items: center; }
+  .top-bar-meta strong { color: #fff; }
+  .reset-btn {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #8AACDC;
+    padding: 0.35rem 0.9rem;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+  }
+  .reset-btn:hover { background: rgba(255,255,255,0.14); color: #fff; }
+
+  .content { max-width: 1200px; margin: 0 auto; padding: 2rem 2rem 4rem; }
+
+  /* ── KPI STRIP ────────────────────────────────────────────────── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .kpi-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.25rem 1.25rem 1rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--blue);
+    border-radius: 14px 14px 0 0;
+  }
+  .kpi-card.green::before { background: var(--green); }
+  .kpi-card.orange::before { background: var(--orange); }
+  .kpi-card.red::before { background: var(--red); }
+  .kpi-label {
+    font-size: 0.72rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+  .kpi-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.2rem;
+    color: var(--navy);
+    line-height: 1;
+  }
+  .kpi-sub { font-size: 0.78rem; color: var(--muted); margin-top: 0.3rem; }
+
+  /* ── SECTION HEADERS ──────────────────────────────────────────── */
+  .section { margin-bottom: 2.5rem; }
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--light);
+  }
+  .section-number {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: var(--light);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--navy);
+  }
+  .section-sub { font-size: 0.82rem; color: var(--muted); margin-top: 0.1rem; }
+
+  /* ── CHART CARDS ─────────────────────────────────────────────── */
+  .chart-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .chart-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--navy);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .chart-title-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--blue);
+    flex-shrink: 0;
+  }
+  .chart-title-dot.green { background: var(--green); }
+  .chart-title-dot.orange { background: var(--orange); }
+  .chart-title-dot.red { background: var(--red); }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+
+  /* ── FIT TABLE ───────────────────────────────────────────────── */
+  .fit-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+  }
+  .fit-table th {
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .fit-table th.right { text-align: right; }
+  .fit-table td {
+    padding: 0.45rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  .fit-table tr:last-child td { border-bottom: none; }
+  .fit-table tr:hover td { background: var(--grey); }
+  .cat-badge {
+    display: inline-block;
+    padding: 0.15rem 0.55rem;
+    border-radius: 100px;
+    font-size: 0.68rem;
+    font-weight: 500;
+  }
+  .bar-cell { min-width: 120px; }
+  .fit-bar {
+    height: 8px;
+    border-radius: 4px;
+    display: flex;
+    overflow: hidden;
+    gap: 1px;
+  }
+  .fit-bar-goed   { background: var(--green); }
+  .fit-bar-beter  { background: var(--orange); }
+  .fit-bar-niet   { background: var(--red); }
+  .pct-green { color: var(--green); font-weight: 600; }
+  .pct-orange { color: var(--orange); font-weight: 600; }
+  .pct-red { color: var(--red); font-weight: 600; }
+
+  .cat-row td {
+    padding: 0.3rem 0.75rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    background: var(--grey);
+  }
+
+  /* ── VERTREK TABLE ───────────────────────────────────────────── */
+  .vertrek-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.75rem;
+  }
+  .vertrek-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .vertrek-name {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--navy);
+  }
+  .vertrek-bar-wrap {
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .vertrek-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: var(--red);
+    transition: width 0.6s cubic-bezier(.22,.68,0,1.2);
+  }
+  .vertrek-pct {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    color: var(--red);
+    line-height: 1;
+  }
+
+  /* ── RICHTING ────────────────────────────────────────────────── */
+  .richting-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+  }
+  .richting-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem;
+  }
+  .richting-name {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--navy);
+    margin-bottom: 0.6rem;
+  }
+  .richting-bars { display: flex; flex-direction: column; gap: 0.35rem; }
+  .richting-row { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; }
+  .richting-label { width: 44px; color: var(--muted); flex-shrink: 0; }
+  .richting-bar-wrap { flex: 1; height: 14px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .richting-bar-meer   { height: 100%; background: var(--green); border-radius: 4px; }
+  .richting-bar-minder { height: 100%; background: var(--orange); border-radius: 4px; }
+  .richting-n { font-weight: 600; color: var(--navy); min-width: 16px; text-align: right; }
+
+  /* ── BELANG RANKING ──────────────────────────────────────────── */
+  .belang-list { display: flex; flex-direction: column; gap: 0.45rem; }
+  .belang-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.82rem;
+  }
+  .belang-rank {
+    width: 22px;
+    text-align: right;
+    color: var(--muted);
+    font-size: 0.72rem;
+    flex-shrink: 0;
+  }
+  .belang-name { width: 175px; flex-shrink: 0; color: var(--navy); }
+  .belang-bar-wrap { flex: 1; height: 10px; background: var(--border); border-radius: 5px; overflow: hidden; }
+  .belang-bar-fill {
+    height: 100%;
+    background: var(--blue);
+    border-radius: 5px;
+    transition: width 0.5s ease;
+  }
+  .belang-score { width: 36px; text-align: right; font-weight: 600; color: var(--navy); font-size: 0.8rem; flex-shrink: 0; }
+
+  /* ── OPEN ANTWOORDEN ─────────────────────────────────────────── */
+  .open-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .open-col-header {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    margin-bottom: 0.6rem;
+  }
+  .open-col-header.goed   { background: var(--lgreen); color: #146B40; }
+  .open-col-header.beter  { background: var(--lorange); color: #8B4200; }
+  .open-col-header.niet   { background: var(--lred); color: #8B2010; }
+  .open-quote {
+    background: var(--grey);
+    border-left: 3px solid var(--border);
+    padding: 0.5rem 0.75rem;
+    border-radius: 0 6px 6px 0;
+    font-size: 0.8rem;
+    color: var(--text);
+    margin-bottom: 0.4rem;
+    line-height: 1.5;
+  }
+  .open-empty { font-size: 0.78rem; color: var(--muted); font-style: italic; }
+
+  /* ── ANIMATIONS ──────────────────────────────────────────────── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .section { animation: fadeUp 0.4s ease both; }
+  .section:nth-child(1) { animation-delay: 0.05s; }
+  .section:nth-child(2) { animation-delay: 0.1s; }
+  .section:nth-child(3) { animation-delay: 0.15s; }
+  .section:nth-child(4) { animation-delay: 0.2s; }
+  .section:nth-child(5) { animation-delay: 0.25s; }
+  .section:nth-child(6) { animation-delay: 0.3s; }
+
+  /* ── LEGEND ──────────────────────────────────────────────────── */
+  .legend {
+    display: flex;
+    gap: 1.25rem;
+    margin-bottom: 1rem;
+    font-size: 0.78rem;
+  }
+  .legend-item { display: flex; align-items: center; gap: 0.4rem; }
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  /* ── FOOTER ──────────────────────────────────────────────────── */
+  .footer {
+    text-align: center;
+    padding: 2rem;
+    font-size: 0.75rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    background: var(--white);
+    margin-top: 2rem;
+  }
+
+  @media (max-width: 900px) {
+    .kpi-grid { grid-template-columns: repeat(3, 1fr); }
+    .two-col { grid-template-columns: 1fr; }
+    .open-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 600px) {
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ UPLOAD SCREEN ════════════════════════════════════════════════════ -->
+<div id="upload-screen">
+  <div class="upload-logo">Werk van <span>Waarde</span></div>
+  <div class="upload-tagline">Quick Scan Dashboard</div>
+
+  <div class="upload-card">
+    <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+      <div class="drop-icon">📊</div>
+      <div class="drop-title">Sleep je Qualtrics-export hierheen</div>
+      <div class="drop-sub">of klik om een bestand te kiezen</div>
+      <input type="file" id="file-input" accept=".xlsx,.xls">
+    </div>
+    <button class="upload-btn" onclick="document.getElementById('file-input').click()">
+      Bestand kiezen (.xlsx)
+    </button>
+    <div class="upload-note">
+      Verwacht: ruwe Qualtrics-export met koprijen intact.<br>
+      Gegevens worden alleen lokaal verwerkt — niets wordt geüpload.
+    </div>
+  </div>
+</div>
+
+<!-- ══ DASHBOARD ════════════════════════════════════════════════════════ -->
+<div id="dashboard">
+  <div class="top-bar">
+    <div class="top-bar-brand">Werk van <span>Waarde</span> — Quick Scan</div>
+    <div class="top-bar-meta">
+      <span>Bestand: <strong id="meta-filename">—</strong></span>
+      <span>n = <strong id="meta-n">—</strong> respondenten</span>
+      <button class="reset-btn" onclick="resetDashboard()">← Nieuw bestand</button>
+    </div>
+  </div>
+
+  <div class="content" id="dash-content"></div>
+
+  <div class="footer">
+    Werk van Waarde — Universiteit Groningen &nbsp;·&nbsp;
+    Gegevens worden uitsluitend lokaal verwerkt
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════
+// CONSTRUCT CONFIG
+// ═══════════════════════════════════════════════════════════════════════
+const CONSTRUCTS = [{"name":"Ontwikkelmogelijkheden","cat":"Leren","bidir":false,"wvw":78,"lk":102,"richting":null,"vertrek":22},{"name":"Competentie","cat":"Leren","bidir":true,"wvw":79,"lk":103,"richting":23,"vertrek":24},{"name":"Autonomie","cat":"Autonomie","bidir":true,"wvw":80,"lk":104,"richting":25,"vertrek":26},{"name":"Verantwoordelijkheid","cat":"Autonomie","bidir":true,"wvw":81,"lk":105,"richting":27,"vertrek":28},{"name":"Collega's","cat":"Relaties","bidir":true,"wvw":82,"lk":106,"richting":29,"vertrek":30},{"name":"Leidinggevende","cat":"Relaties","bidir":true,"wvw":83,"lk":107,"richting":31,"vertrek":32},{"name":"Psych. veiligheid","cat":"Relaties","bidir":false,"wvw":84,"lk":108,"richting":null,"vertrek":33},{"name":"Inclusie & diversiteit","cat":"Relaties","bidir":true,"wvw":85,"lk":109,"richting":34,"vertrek":35},{"name":"Authenticiteit","cat":"Relaties","bidir":false,"wvw":86,"lk":110,"richting":null,"vertrek":36},{"name":"Zinvolheid","cat":"Zinvolheid","bidir":false,"wvw":87,"lk":111,"richting":null,"vertrek":37},{"name":"Aansluiting waarden","cat":"Zinvolheid","bidir":false,"wvw":88,"lk":112,"richting":null,"vertrek":38},{"name":"Taakinhoud","cat":"Zinvolheid","bidir":true,"wvw":89,"lk":113,"richting":39,"vertrek":40},{"name":"Werkdruk","cat":"Werkdruk","bidir":true,"wvw":90,"lk":114,"richting":41,"vertrek":42},{"name":"Lichamelijke uitd.","cat":"Werkdruk","bidir":true,"wvw":91,"lk":115,"richting":43,"vertrek":44},{"name":"Emotionele uitd.","cat":"Werkdruk","bidir":true,"wvw":92,"lk":116,"richting":45,"vertrek":46},{"name":"Mentale uitdaging","cat":"Werkdruk","bidir":true,"wvw":93,"lk":117,"richting":47,"vertrek":48},{"name":"Werk-privébalans","cat":"Werkdruk","bidir":true,"wvw":94,"lk":118,"richting":49,"vertrek":50},{"name":"Productiviteit","cat":"Werkdruk","bidir":true,"wvw":95,"lk":119,"richting":51,"vertrek":52},{"name":"Werkuren","cat":"Werktijden","bidir":true,"wvw":96,"lk":120,"richting":53,"vertrek":54},{"name":"Thuiswerken","cat":"Werktijden","bidir":true,"wvw":97,"lk":121,"richting":55,"vertrek":56},{"name":"Salaris","cat":"Beloning","bidir":false,"wvw":98,"lk":122,"richting":null,"vertrek":57},{"name":"Sec. arbeidsvoorw.","cat":"Beloning","bidir":false,"wvw":99,"lk":123,"richting":null,"vertrek":58},{"name":"Contracttype","cat":"Beloning","bidir":true,"wvw":100,"lk":124,"richting":59,"vertrek":60},{"name":"Baanzekerheid","cat":"Beloning","bidir":false,"wvw":101,"lk":125,"richting":null,"vertrek":61}];
+
+const CAT_COLORS = {
+  'Leren':      '#4F46E5',
+  'Autonomie':  '#059669',
+  'Relaties':   '#D97706',
+  'Zinvolheid': '#7C3AED',
+  'Werkdruk':   '#DC2626',
+  'Werktijden': '#0891B2',
+  'Beloning':   '#B45309',
+};
+const CAT_BG = {
+  'Leren':'#EEF2FF','Autonomie':'#ECFDF5','Relaties':'#FFFBEB',
+  'Zinvolheid':'#F5F3FF','Werkdruk':'#FEF2F2','Werktijden':'#ECFEFF','Beloning':'#FFFBEB'
+};
+
+// ═══════════════════════════════════════════════════════════════════════
+// FILE HANDLING
+// ═══════════════════════════════════════════════════════════════════════
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault(); dropZone.classList.remove('dragover');
+  if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener('change', e => { if (e.target.files[0]) handleFile(e.target.files[0]); });
+
+function handleFile(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const wb = XLSX.read(e.target.result, { type: 'array' });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const raw = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+      const stats = processData(raw);
+      renderDashboard(stats, file.name);
+    } catch(err) {
+      alert('Fout bij inlezen: ' + err.message);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// DATA PROCESSING
+// ═══════════════════════════════════════════════════════════════════════
+function processData(raw) {
+  // Row 0 = short headers, row 1 = long labels, rows 2+ = data
+  // Identify data rows: ResponseId (col 8) starts with "R_"
+  const dataRows = raw.slice(2).filter(r => String(r[8] || '').startsWith('R_'));
+  const n = dataRows.length;
+  if (n === 0) throw new Error('Geen geldige respondenten gevonden (ResponseId begint niet met R_).');
+
+  // KPIs
+  const jobSat  = avg(dataRows.map(r => +r[62]).filter(v => v > 0));
+  const jobHap  = avg(dataRows.map(r => +r[63]).filter(v => v > 0));
+  const search  = dataRows.filter(r => +r[64] === 1).length / n;
+  const leave   = dataRows.filter(r => +r[65] === 1).length / n;
+
+  // Per-construct stats
+  const constructs = CONSTRUCTS.map((c, i) => {
+    const wvwVals = dataRows.map(r => r[c.wvw]);
+    const total   = n;
+    const goed    = wvwVals.filter(v => v === 'Dit past goed').length  / total;
+    const beter   = wvwVals.filter(v => v === 'Dit kan beter').length  / total;
+    const niet    = wvwVals.filter(v => v === 'Dit past niet').length  / total;
+
+    const lkVals  = dataRows.map(r => +r[c.lk]).filter(v => v > 0);
+    const lk      = lkVals.length ? avg(lkVals) : 0;
+
+    // Vertrekrisico: count vertrek=1 among those who said kan beter/past niet
+    let vert = null;
+    if (c.vertrek !== null) {
+      const denom = wvwVals.filter(v => v === 'Dit kan beter' || v === 'Dit past niet').length;
+      const numer = dataRows.filter(r => +r[c.vertrek] === 1).length;
+      vert = denom > 0 ? numer / denom : 0;
+    }
+
+    // Richting
+    let meer = null, minder = null;
+    if (c.bidir && c.richting !== null) {
+      meer   = dataRows.filter(r => +r[c.richting] === 1).length;
+      minder = dataRows.filter(r => +r[c.richting] === 2).length;
+    }
+
+    // Open antwoorden (only if construct has follow-up)
+    return { ...c, goed, beter, niet, lk, vert, meer, minder };
+  });
+
+  // Open antwoorden
+  const open = {
+    goed:  dataRows.map(r => r[19]).filter(v => v && String(v).trim()),
+    beter: dataRows.map(r => r[20]).filter(v => v && String(v).trim()),
+    niet:  dataRows.map(r => r[21]).filter(v => v && String(v).trim()),
+  };
+
+  return { n, jobSat, jobHap, search, leave, constructs, open };
+}
+
+function avg(arr) { return arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : 0; }
+function pct(v)   { return Math.round(v * 100); }
+function fmt1(v)  { return v.toFixed(1); }
+
+// ═══════════════════════════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════════════════════════
+let chartInstances = [];
+
+function resetDashboard() {
+  chartInstances.forEach(c => c.destroy());
+  chartInstances = [];
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('upload-screen').style.display = 'flex';
+  document.getElementById('file-input').value = '';
+}
+
+function renderDashboard(stats, filename) {
+  document.getElementById('upload-screen').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  document.getElementById('meta-filename').textContent = filename;
+  document.getElementById('meta-n').textContent = stats.n;
+
+  const el = document.getElementById('dash-content');
+  el.innerHTML = '';
+
+  // ── KPI strip ────────────────────────────────────────────────────
+  const kpiEl = document.createElement('div');
+  kpiEl.className = 'kpi-grid';
+  kpiEl.style.marginBottom = '2rem';
+  kpiEl.innerHTML = `
+    <div class="kpi-card">
+      <div class="kpi-label">Respondenten</div>
+      <div class="kpi-value">${stats.n}</div>
+      <div class="kpi-sub">deelnemers</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">Werktevredenheid</div>
+      <div class="kpi-value">${fmt1(stats.jobSat)}</div>
+      <div class="kpi-sub">gemiddeld op 5-punt schaal</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">Werkgeluk</div>
+      <div class="kpi-value">${fmt1(stats.jobHap)}</div>
+      <div class="kpi-sub">gemiddeld op 5-punt schaal</div>
+    </div>
+    <div class="kpi-card orange">
+      <div class="kpi-label">Actief zoekend</div>
+      <div class="kpi-value">${pct(stats.search)}%</div>
+      <div class="kpi-sub">zoekt actief naar ander werk</div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-label">Vertrekintentie</div>
+      <div class="kpi-value">${pct(stats.leave)}%</div>
+      <div class="kpi-sub">overweegt te vertrekken</div>
+    </div>`;
+  el.appendChild(kpiEl);
+
+  // ── Section 1: Fit overview ───────────────────────────────────────
+  el.appendChild(makeSection('1', 'Hoe past het werk?',
+    'Verdeling "past goed / kan beter / past niet" per construct', s => {
+
+    // Stacked horizontal bar chart
+    const chartCard = document.createElement('div');
+    chartCard.className = 'chart-card';
+    chartCard.innerHTML = `
+      <div class="chart-title"><span class="chart-title-dot"></span>Fit per construct — alle 24 aspecten</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div> Past goed</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--orange)"></div> Kan beter</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div> Past niet</div>
+      </div>
+      <canvas id="chart-fit" style="max-height:520px"></canvas>`;
+    s.appendChild(chartCard);
+
+    // Table below
+    const tableCard = document.createElement('div');
+    tableCard.className = 'chart-card';
+    tableCard.innerHTML = `<div class="chart-title"><span class="chart-title-dot"></span>Overzichtstabel</div>`;
+    const table = buildFitTable(stats.constructs);
+    tableCard.appendChild(table);
+    s.appendChild(tableCard);
+
+    // Build chart after DOM insert (needs canvas to be in DOM)
+    requestAnimationFrame(() => {
+      const ctx = document.getElementById('chart-fit').getContext('2d');
+      const labels = stats.constructs.map(c => c.name);
+      const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [
+            { label: 'Past goed',  data: stats.constructs.map(c => c.goed),  backgroundColor: '#1A9959', borderWidth: 0 },
+            { label: 'Kan beter',  data: stats.constructs.map(c => c.beter), backgroundColor: '#D4680A', borderWidth: 0 },
+            { label: 'Past niet',  data: stats.constructs.map(c => c.niet),  backgroundColor: '#C0392B', borderWidth: 0 },
+          ]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          scales: {
+            x: { stacked: true, max: 1, ticks: { format: { style: 'percent' }, font: { size: 10 } }, grid: { color: '#EEF0F5' } },
+            y: { stacked: true, ticks: { font: { size: 10 }, color: '#0F1F3D' }, grid: { display: false } }
+          },
+          plugins: {
+            legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 16 } },
+            tooltip: {
+              callbacks: {
+                label: ctx => ` ${ctx.dataset.label}: ${pct(ctx.raw)}%`
+              }
+            }
+          }
+        }
+      });
+      chartInstances.push(chart);
+    });
+  }));
+
+  // ── Section 2: Vertrekrisico ──────────────────────────────────────
+  el.appendChild(makeSection('2', 'Vertrekrisico',
+    'Percentage dat overweegt te vertrekken als het construct niet verandert', s => {
+
+    const withVert = stats.constructs
+      .filter(c => c.vert !== null && c.vert > 0)
+      .sort((a, b) => b.vert - a.vert);
+
+    const grid = document.createElement('div');
+    grid.className = 'vertrek-grid';
+    withVert.forEach(c => {
+      const card = document.createElement('div');
+      card.className = 'vertrek-card';
+      card.innerHTML = `
+        <div class="vertrek-pct">${pct(c.vert)}%</div>
+        <div class="vertrek-name">${c.name}</div>
+        <div class="vertrek-bar-wrap">
+          <div class="vertrek-bar-fill" style="width:${pct(c.vert)}%"></div>
+        </div>
+        <div style="font-size:0.72rem;color:var(--muted)">${c.cat}</div>`;
+      grid.appendChild(card);
+    });
+    if (withVert.length === 0) {
+      grid.innerHTML = '<p style="color:var(--muted);font-size:0.85rem">Geen constructen met vertrekrisico data.</p>';
+    }
+
+    const chartCard = document.createElement('div');
+    chartCard.className = 'chart-card';
+    chartCard.innerHTML = `<div class="chart-title"><span class="chart-title-dot red"></span>Vertrekrisico per construct</div>`;
+    chartCard.appendChild(grid);
+    s.appendChild(chartCard);
+
+    // Also add a bar chart
+    const chartCard2 = document.createElement('div');
+    chartCard2.className = 'chart-card';
+    chartCard2.innerHTML = `
+      <div class="chart-title"><span class="chart-title-dot red"></span>Vergelijking vertrekrisico</div>
+      <canvas id="chart-vertrek" style="max-height:340px"></canvas>`;
+    s.appendChild(chartCard2);
+
+    requestAnimationFrame(() => {
+      const ctx = document.getElementById('chart-vertrek').getContext('2d');
+      const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: withVert.map(c => c.name),
+          datasets: [{
+            label: '% overweegt vertrek',
+            data: withVert.map(c => c.vert),
+            backgroundColor: withVert.map(c => c.vert > 0.6 ? '#C0392B' : c.vert > 0.3 ? '#E67E22' : '#F1948A'),
+            borderWidth: 0,
+            borderRadius: 4,
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          scales: {
+            x: { max: 1, ticks: { format: { style: 'percent' }, font: { size: 10 } }, grid: { color: '#EEF0F5' } },
+            y: { ticks: { font: { size: 10 } }, grid: { display: false } }
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: ctx => ` ${pct(ctx.raw)}% overweegt vertrek` } }
+          }
+        }
+      });
+      chartInstances.push(chart);
+    });
+  }));
+
+  // ── Section 3: Belang ranking ─────────────────────────────────────
+  el.appendChild(makeSection('3', 'Belang van elk aspect',
+    'Hoe belangrijk vinden medewerkers elk aspect, ongeacht huidige situatie (1–5)', s => {
+
+    const sorted = [...stats.constructs].sort((a, b) => b.lk - a.lk);
+
+    const twoCol = document.createElement('div');
+    twoCol.className = 'two-col';
+
+    // Left: list
+    const listCard = document.createElement('div');
+    listCard.className = 'chart-card';
+    listCard.innerHTML = `<div class="chart-title"><span class="chart-title-dot" style="background:var(--blue)"></span>Ranking belang</div>`;
+    const list = document.createElement('div');
+    list.className = 'belang-list';
+    sorted.forEach((c, idx) => {
+      const row = document.createElement('div');
+      row.className = 'belang-row';
+      row.innerHTML = `
+        <div class="belang-rank">${idx + 1}</div>
+        <div class="belang-name">${c.name}</div>
+        <div class="belang-bar-wrap">
+          <div class="belang-bar-fill" style="width:${(c.lk/5)*100}%;background:${CAT_COLORS[c.cat]}"></div>
+        </div>
+        <div class="belang-score">${fmt1(c.lk)}</div>`;
+      list.appendChild(row);
+    });
+    listCard.appendChild(list);
+
+    // Right: radar chart per category
+    const radarCard = document.createElement('div');
+    radarCard.className = 'chart-card';
+    radarCard.innerHTML = `
+      <div class="chart-title"><span class="chart-title-dot" style="background:var(--blue)"></span>Gemiddeld belang per categorie</div>
+      <canvas id="chart-belang-cat" style="max-height:300px"></canvas>`;
+
+    twoCol.appendChild(listCard);
+    twoCol.appendChild(radarCard);
+    s.appendChild(twoCol);
+
+    requestAnimationFrame(() => {
+      const cats = [...new Set(CONSTRUCTS.map(c => c.cat))];
+      const catAvgs = cats.map(cat => {
+        const vals = stats.constructs.filter(c => c.cat === cat).map(c => c.lk);
+        return avg(vals);
+      });
+      const ctx = document.getElementById('chart-belang-cat').getContext('2d');
+      const chart = new Chart(ctx, {
+        type: 'radar',
+        data: {
+          labels: cats,
+          datasets: [{
+            label: 'Gem. belang',
+            data: catAvgs,
+            backgroundColor: 'rgba(27,79,216,0.12)',
+            borderColor: '#1B4FD8',
+            borderWidth: 2,
+            pointBackgroundColor: '#1B4FD8',
+            pointRadius: 4,
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            r: { min: 0, max: 5, ticks: { stepSize: 1, font: { size: 9 } },
+                 pointLabels: { font: { size: 10 } }, grid: { color: '#EEF0F5' } }
+          },
+          plugins: { legend: { display: false } }
+        }
+      });
+      chartInstances.push(chart);
+    });
+  }));
+
+  // ── Section 4: Gewenste richting ──────────────────────────────────
+  el.appendChild(makeSection('4', 'Gewenste richting',
+    'Voor constructen die niet passen en bidirectioneel zijn: meer of minder?', s => {
+
+    const bidir = stats.constructs.filter(c => c.bidir && (c.meer !== null || c.minder !== null)
+                                               && (c.meer + c.minder) > 0);
+
+    const grid = document.createElement('div');
+    grid.className = 'richting-grid';
+    bidir.forEach(c => {
+      const total = (c.meer || 0) + (c.minder || 0);
+      const meerPct   = total ? (c.meer   || 0) / total : 0;
+      const minderPct = total ? (c.minder || 0) / total : 0;
+      const card = document.createElement('div');
+      card.className = 'richting-card';
+      card.innerHTML = `
+        <div class="richting-name">${c.name}</div>
+        <div class="richting-bars">
+          <div class="richting-row">
+            <div class="richting-label">Meer</div>
+            <div class="richting-bar-wrap">
+              <div class="richting-bar-meer" style="width:${meerPct*100}%"></div>
+            </div>
+            <div class="richting-n" style="color:var(--green)">${c.meer || 0}</div>
+          </div>
+          <div class="richting-row">
+            <div class="richting-label">Minder</div>
+            <div class="richting-bar-wrap">
+              <div class="richting-bar-minder" style="width:${minderPct*100}%"></div>
+            </div>
+            <div class="richting-n" style="color:var(--orange)">${c.minder || 0}</div>
+          </div>
+        </div>`;
+      grid.appendChild(card);
+    });
+
+    const card = document.createElement('div');
+    card.className = 'chart-card';
+    card.innerHTML = `<div class="chart-title"><span class="chart-title-dot green"></span>Meer of minder per construct</div>`;
+    card.appendChild(grid);
+
+    // Diverging bar chart
+    const chartCard = document.createElement('div');
+    chartCard.className = 'chart-card';
+    chartCard.innerHTML = `
+      <div class="chart-title"><span class="chart-title-dot green"></span>Divergerende weergave</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Meer</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--orange)"></div>Minder</div>
+      </div>
+      <canvas id="chart-richting" style="max-height:380px"></canvas>`;
+
+    s.appendChild(card);
+    s.appendChild(chartCard);
+
+    requestAnimationFrame(() => {
+      const ctx = document.getElementById('chart-richting').getContext('2d');
+      const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: bidir.map(c => c.name),
+          datasets: [
+            { label: 'Meer',   data: bidir.map(c => c.meer   || 0), backgroundColor: '#1A9959', borderWidth: 0, borderRadius: 3 },
+            { label: 'Minder', data: bidir.map(c => -(c.minder || 0)), backgroundColor: '#D4680A', borderWidth: 0, borderRadius: 3 },
+          ]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          scales: {
+            x: { stacked: true, ticks: { callback: v => Math.abs(v), font: { size: 10 } }, grid: { color: '#EEF0F5' } },
+            y: { stacked: true, ticks: { font: { size: 10 } }, grid: { display: false } }
+          },
+          plugins: {
+            legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 16 } },
+            tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: ${Math.abs(ctx.raw)}` } }
+          }
+        }
+      });
+      chartInstances.push(chart);
+    });
+  }));
+
+  // ── Section 5: Open antwoorden ────────────────────────────────────
+  el.appendChild(makeSection('5', 'Open antwoorden',
+    'Kwalitatieve opmerkingen van respondenten', s => {
+
+    const card = document.createElement('div');
+    card.className = 'chart-card';
+    card.innerHTML = `<div class="chart-title"><span class="chart-title-dot" style="background:var(--muted)"></span>Opmerkingen per categorie</div>`;
+
+    const grid = document.createElement('div');
+    grid.className = 'open-grid';
+
+    const cols = [
+      { key: 'goed',  label: 'Past goed — niet benoemd', cls: 'goed' },
+      { key: 'beter', label: 'Kan beter — niet benoemd',  cls: 'beter' },
+      { key: 'niet',  label: 'Past niet — niet benoemd',  cls: 'niet' },
+    ];
+
+    cols.forEach(col => {
+      const colEl = document.createElement('div');
+      const hdr = document.createElement('div');
+      hdr.className = `open-col-header ${col.cls}`;
+      hdr.textContent = col.label;
+      colEl.appendChild(hdr);
+
+      const items = stats.open[col.key];
+      if (items.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'open-empty';
+        empty.textContent = 'Geen opmerkingen.';
+        colEl.appendChild(empty);
+      } else {
+        items.forEach(txt => {
+          const q = document.createElement('div');
+          q.className = 'open-quote';
+          q.textContent = String(txt);
+          colEl.appendChild(q);
+        });
+      }
+      grid.appendChild(colEl);
+    });
+
+    card.appendChild(grid);
+    s.appendChild(card);
+  }));
+}
+
+// ── Helper: section wrapper ─────────────────────────────────────────
+function makeSection(num, title, sub, renderFn) {
+  const sec = document.createElement('div');
+  sec.className = 'section';
+  sec.innerHTML = `
+    <div class="section-header">
+      <div class="section-number">${num}</div>
+      <div>
+        <div class="section-title">${title}</div>
+        <div class="section-sub">${sub}</div>
+      </div>
+    </div>`;
+  renderFn(sec);
+  return sec;
+}
+
+// ── Helper: fit table ──────────────────────────────────────────────
+function buildFitTable(constructs) {
+  const table = document.createElement('table');
+  table.className = 'fit-table';
+  table.innerHTML = `
+    <thead><tr>
+      <th>Construct</th>
+      <th>Categorie</th>
+      <th class="right">Past goed</th>
+      <th class="right">Kan beter</th>
+      <th class="right">Past niet</th>
+      <th>Verdeling</th>
+      <th class="right">Belang</th>
+    </tr></thead>`;
+  const tbody = document.createElement('tbody');
+
+  let lastCat = null;
+  constructs.forEach((c, i) => {
+    if (c.cat !== lastCat) {
+      const catRow = document.createElement('tr');
+      catRow.className = 'cat-row';
+      catRow.innerHTML = `<td colspan="7">${c.cat}</td>`;
+      tbody.appendChild(catRow);
+      lastCat = c.cat;
+    }
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="font-weight:500">${c.name}</td>
+      <td><span class="cat-badge" style="background:${CAT_BG[c.cat]};color:${CAT_COLORS[c.cat]}">${c.cat}</span></td>
+      <td class="right pct-green">${pct(c.goed)}%</td>
+      <td class="right pct-orange">${pct(c.beter)}%</td>
+      <td class="right pct-red">${pct(c.niet)}%</td>
+      <td class="bar-cell">
+        <div class="fit-bar">
+          <div class="fit-bar-goed"   style="width:${pct(c.goed)}%"></div>
+          <div class="fit-bar-beter"  style="width:${pct(c.beter)}%"></div>
+          <div class="fit-bar-niet"   style="width:${pct(c.niet)}%"></div>
+        </div>
+      </td>
+      <td class="right" style="font-weight:600">${fmt1(c.lk)}</td>`;
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  return table;
+}
+</script>
+</body>
+</html>
