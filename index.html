@@ -7,534 +7,555 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=DM+Serif+Display:ital@0;1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&display=swap');
 
-  :root {
-    --navy:   #0F1F3D;
-    --blue:   #1B4FD8;
-    --mid:    #3B6EE8;
-    --light:  #E8EFFE;
-    --green:  #1A9959;
-    --lgreen: #D4F0E4;
-    --orange: #D4680A;
-    --lorange:#FDE8CE;
-    --red:    #C0392B;
-    --lred:   #FAD9D5;
-    --grey:   #F4F5F8;
-    --border: #DDE1EC;
-    --text:   #0F1F3D;
-    --muted:  #6B7494;
-    --white:  #FFFFFF;
-    --cat-leren:     #EEF2FF;
-    --cat-autonomie: #F0FBF4;
-    --cat-relaties:  #FFFBEB;
-    --cat-zinvol:    #F5F0FF;
-    --cat-werkdruk:  #FFF0EE;
-    --cat-werktijd:  #F0FBFA;
-    --cat-beloning:  #FFF7ED;
-  }
+/* ── WvW OFFICIAL BRAND TOKENS ─────────────────────────────────────────
+   Kleuren exact uit branding schets:
+   #6f3364  donkerpaars (primair)
+   #b791b6  lichtpaars (secundair)
+   #f5c323  geel (accent)
+   #fbfaf2  crèmewit (achtergrond)
+   #484942  donkergrijs (tekst)
+   Font: Figtree 900 (headers) + Figtree 400/500 (body)
+───────────────────────────────────────────────────────────────────────── */
+:root {
+  --purple:      #6f3364;
+  --purple-mid:  #8a4a7e;
+  --purple-soft: #b791b6;
+  --purple-pale: #ecdde9;
+  --purple-tint: #f8f2f7;
+  --yellow:      #f5c323;
+  --yellow-deep: #c99b00;
+  --yellow-pale: #fef6cc;
+  --cream:       #fbfaf2;
+  --charcoal:    #484942;
+  --green:       #2d8a4e;
+  --lgreen:      #d4ede0;
+  --orange:      #c96b10;
+  --lorange:     #fde8ce;
+  --red:         #b83232;
+  --lred:        #f5d5d5;
+  --grey:        #f3f1ee;
+  --border:      #e2d8de;
+  --text:        #484942;
+  --muted:       #8a7f86;
+  --white:       #ffffff;
+}
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Figtree', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: #F0F2F8;
-    color: var(--text);
-    min-height: 100vh;
-  }
+/* ── UPLOAD SCREEN ──────────────────────────────────────────────────── */
+#upload-screen {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 2rem;
+  background: var(--purple);
+  background-image: radial-gradient(ellipse at 20% 50%, #8a4a7e 0%, transparent 60%),
+                    radial-gradient(ellipse at 80% 20%, #4a1f42 0%, transparent 50%);
+}
 
-  /* ── UPLOAD SCREEN ─────────────────────────────────────────────── */
-  #upload-screen {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-    background: linear-gradient(145deg, #0A1628 0%, #1B3A6B 50%, #0F2952 100%);
-  }
+.upload-logo {
+  font-family: 'Figtree', sans-serif;
+  font-size: 2.8rem;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.2rem;
+  text-align: center;
+  text-transform: uppercase;
+}
+.upload-logo span { color: var(--yellow); font-style: normal; }
+.upload-tagline {
+  color: rgba(255,255,255,0.5);
+  font-size: 0.8rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 3rem;
+  text-align: center;
+}
 
-  .upload-logo {
-    font-family: 'DM Serif Display', serif;
-    font-size: 2.6rem;
-    color: #fff;
-    letter-spacing: -0.02em;
-    margin-bottom: 0.25rem;
-  }
-  .upload-logo span { color: #7BA7F7; font-style: italic; }
+.upload-card {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 24px;
+  padding: 2.5rem 3rem;
+  width: 100%; max-width: 500px;
+  text-align: center;
+}
 
-  .upload-tagline {
-    color: #8AACDC;
-    font-size: 0.95rem;
-    font-weight: 300;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 3rem;
-  }
+.drop-zone {
+  border: 2px dashed rgba(245,195,35,0.45);
+  border-radius: 14px;
+  padding: 2rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: rgba(245,195,35,0.04);
+  margin-bottom: 1.25rem;
+}
+.drop-zone:hover, .drop-zone.dragover {
+  border-color: var(--yellow);
+  background: rgba(245,195,35,0.1);
+}
+.drop-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+.drop-title { color: #fff; font-size: 1rem; font-weight: 500; margin-bottom: 0.3rem; }
+.drop-sub   { color: rgba(255,255,255,0.45); font-size: 0.82rem; }
+#file-input { display: none; }
 
-  .upload-card {
-    background: rgba(255,255,255,0.06);
-    border: 1.5px solid rgba(255,255,255,0.12);
-    border-radius: 20px;
-    padding: 3rem 3.5rem;
-    width: 100%;
-    max-width: 520px;
-    text-align: center;
-    backdrop-filter: blur(10px);
-  }
+.upload-btn {
+  width: 100%; padding: 0.85rem;
+  background: var(--yellow); color: var(--purple);
+  border: none; border-radius: 10px;
+  font-family: 'Figtree', sans-serif;
+  font-size: 0.95rem; font-weight: 600;
+  cursor: pointer; transition: background 0.2s;
+  margin-bottom: 0.75rem;
+}
+.upload-btn:hover { background: #FFD333; }
+.upload-note { color: rgba(255,255,255,0.35); font-size: 0.76rem; line-height: 1.6; }
 
-  .drop-zone {
-    border: 2px dashed rgba(123,167,247,0.5);
-    border-radius: 14px;
-    padding: 2.5rem 2rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    background: rgba(123,167,247,0.04);
-  }
-  .drop-zone:hover, .drop-zone.dragover {
-    border-color: #7BA7F7;
-    background: rgba(123,167,247,0.1);
-  }
-  .drop-icon {
-    width: 56px; height: 56px;
-    background: rgba(123,167,247,0.15);
-    border-radius: 14px;
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 1.25rem;
-    font-size: 1.6rem;
-  }
-  .drop-title {
-    color: #fff;
-    font-size: 1.05rem;
-    font-weight: 500;
-    margin-bottom: 0.4rem;
-  }
-  .drop-sub {
-    color: #8AACDC;
-    font-size: 0.85rem;
-  }
-  #file-input { display: none; }
+/* ── FIRM CODE SCREEN ────────────────────────────────────────────────── */
+#firmcode-screen {
+  display: none; min-height: 100vh;
+  align-items: center; justify-content: center; flex-direction: column;
+  padding: 2rem;
+  background: var(--purple);
+  background-image: radial-gradient(ellipse at 20% 50%, #8a4a7e 0%, transparent 60%);
+}
+.firmcode-card {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 24px;
+  padding: 2.5rem 3rem;
+  width: 100%; max-width: 440px;
+  text-align: center;
+}
+.firmcode-title {
+  font-family: 'Figtree', sans-serif;
+  font-size: 1.6rem; font-weight: 900; color: #fff;
+  text-transform: uppercase; letter-spacing: -0.02em;
+  margin-bottom: 0.4rem;
+}
+.firmcode-sub { color: rgba(255,255,255,0.45); font-size: 0.85rem; margin-bottom: 2rem; }
+.firmcode-input-wrap { position: relative; margin-bottom: 1rem; }
+.firmcode-input {
+  width: 100%; padding: 0.9rem 1rem;
+  background: rgba(255,255,255,0.1);
+  border: 1.5px solid rgba(255,255,255,0.2);
+  border-radius: 10px;
+  color: #fff; font-family: 'Figtree', sans-serif;
+  font-size: 1.1rem; font-weight: 500;
+  letter-spacing: 0.15em; text-align: center;
+  text-transform: uppercase;
+  outline: none; transition: border-color 0.2s;
+}
+.firmcode-input:focus { border-color: var(--yellow); }
+.firmcode-input::placeholder { color: rgba(255,255,255,0.25); letter-spacing: 0.05em; text-transform: none; font-size: 0.85rem; }
+.firmcode-btn {
+  width: 100%; padding: 0.85rem;
+  background: var(--yellow); color: var(--purple);
+  border: none; border-radius: 10px;
+  font-family: 'Figtree', sans-serif;
+  font-size: 0.95rem; font-weight: 600;
+  cursor: pointer; transition: background 0.2s;
+}
+.firmcode-btn:hover { background: #FFD333; }
+.firmcode-error {
+  color: #FF8A80; font-size: 0.82rem;
+  margin-top: 0.75rem; display: none;
+}
+.firmcode-back {
+  margin-top: 1.25rem; color: rgba(255,255,255,0.35);
+  font-size: 0.78rem; cursor: pointer;
+  background: none; border: none;
+  font-family: 'Figtree', sans-serif;
+}
+.firmcode-back:hover { color: rgba(255,255,255,0.6); }
+.firmcode-stats {
+  margin-top: 1.5rem; padding-top: 1.25rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.35); font-size: 0.78rem;
+}
+.firmcode-stats strong { color: rgba(255,255,255,0.6); }
 
-  .upload-btn {
-    margin-top: 1.5rem;
-    width: 100%;
-    padding: 0.85rem;
-    background: #1B4FD8;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.95rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .upload-btn:hover { background: #2460F0; }
+/* ── DASHBOARD ───────────────────────────────────────────────────────── */
+#dashboard { display: none; }
 
-  .upload-note {
-    margin-top: 1.25rem;
-    color: #6B8AB5;
-    font-size: 0.78rem;
-    line-height: 1.6;
-  }
+.top-bar {
+  background: var(--purple);
+  color: #fff;
+  padding: 0 2rem; height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 16px rgba(61,26,110,0.3);
+}
+.top-bar-brand {
+  font-family: 'Figtree', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.top-bar-brand span { color: var(--yellow); font-style: normal; }
+.top-bar-right { display: flex; align-items: center; gap: 1rem; }
+.top-bar-meta { font-size: 0.78rem; color: rgba(255,255,255,0.5); }
+.top-bar-meta strong { color: rgba(255,255,255,0.9); }
+.top-bar-chip {
+  background: var(--yellow); color: var(--purple);
+  padding: 0.25rem 0.75rem; border-radius: 100px;
+  font-size: 0.75rem; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+}
+.top-btn {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: rgba(255,255,255,0.75);
+  padding: 0.35rem 0.85rem; border-radius: 7px;
+  font-size: 0.78rem; cursor: pointer;
+  font-family: 'Figtree', sans-serif; transition: all 0.2s;
+}
+.top-btn:hover { background: rgba(255,255,255,0.18); color: #fff; }
+.top-btn.pdf {
+  background: var(--yellow); color: var(--purple);
+  border-color: var(--yellow); font-weight: 600;
+}
+.top-btn.pdf:hover { background: #FFD333; }
 
-  /* ── DASHBOARD ─────────────────────────────────────────────────── */
-  #dashboard { display: none; }
+.content { max-width: 1200px; margin: 0 auto; padding: 2rem 2rem 4rem; }
 
-  .top-bar {
-    background: var(--navy);
-    color: #fff;
-    padding: 0 2rem;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
-  }
-  .top-bar-brand {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.2rem;
-    letter-spacing: -0.01em;
-  }
-  .top-bar-brand span { color: #7BA7F7; font-style: italic; }
-  .top-bar-meta { font-size: 0.8rem; color: #8AACDC; display: flex; gap: 1.5rem; align-items: center; }
-  .top-bar-meta strong { color: #fff; }
-  .reset-btn {
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.15);
-    color: #8AACDC;
-    padding: 0.35rem 0.9rem;
-    border-radius: 6px;
-    font-size: 0.78rem;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    transition: all 0.2s;
-  }
-  .reset-btn:hover { background: rgba(255,255,255,0.14); color: #fff; }
+/* ── KPI STRIP ───────────────────────────────────────────────────────── */
+.kpi-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 1rem; margin-bottom: 2rem; }
+.kpi-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.25rem 1.25rem 1rem;
+  position: relative; overflow: hidden;
+}
+.kpi-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 4px; background: var(--purple-soft);
+  border-radius: 14px 14px 0 0;
+}
+.kpi-card.yellow::before { background: var(--yellow); }
+.kpi-card.green::before  { background: var(--green); }
+.kpi-card.red::before    { background: var(--red); }
+.kpi-label {
+  font-size: 0.7rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--muted); margin-bottom: 0.4rem;
+}
+.kpi-value {
+  font-family: 'Figtree', sans-serif;
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--purple);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.kpi-sub  { font-size: 0.74rem; color: var(--muted); margin-top: 0.25rem; }
+.kpi-bench {
+  font-size: 0.72rem; color: var(--muted);
+  margin-top: 0.35rem; padding-top: 0.35rem;
+  border-top: 1px dashed var(--border);
+}
+.kpi-bench span { color: var(--purple-soft); font-weight: 500; }
 
-  .content { max-width: 1200px; margin: 0 auto; padding: 2rem 2rem 4rem; }
+/* ── SECTION ─────────────────────────────────────────────────────────── */
+.section { margin-bottom: 2.5rem; animation: fadeUp 0.4s ease both; }
+.section:nth-child(2) { animation-delay: 0.05s; }
+.section:nth-child(3) { animation-delay: 0.1s;  }
+.section:nth-child(4) { animation-delay: 0.15s; }
+.section:nth-child(5) { animation-delay: 0.2s;  }
+.section:nth-child(6) { animation-delay: 0.25s; }
+.section:nth-child(7) { animation-delay: 0.3s;  }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
-  /* ── KPI STRIP ────────────────────────────────────────────────── */
-  .kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-  .kpi-card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 1.25rem 1.25rem 1rem;
-    position: relative;
-    overflow: hidden;
-  }
-  .kpi-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: var(--blue);
-    border-radius: 14px 14px 0 0;
-  }
-  .kpi-card.green::before { background: var(--green); }
-  .kpi-card.orange::before { background: var(--orange); }
-  .kpi-card.red::before { background: var(--red); }
-  .kpi-label {
-    font-size: 0.72rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--muted);
-    margin-bottom: 0.5rem;
-  }
-  .kpi-value {
-    font-family: 'DM Serif Display', serif;
-    font-size: 2.2rem;
-    color: var(--navy);
-    line-height: 1;
-  }
-  .kpi-sub { font-size: 0.78rem; color: var(--muted); margin-top: 0.3rem; }
+.section-header {
+  display: flex; align-items: baseline; gap: 0.75rem;
+  margin-bottom: 1.25rem; padding-bottom: 0.75rem;
+  border-bottom: 3px solid var(--yellow);
+}
+.section-number {
+  font-family: 'Figtree', sans-serif;
+  font-size: 1.8rem; font-weight: 900; color: var(--purple-pale); line-height: 1; flex-shrink: 0;
+}
+.section-title  { font-size: 1rem; font-weight: 900; color: var(--purple); text-transform: uppercase; letter-spacing: 0.04em; }
+.section-sub    { font-size: 0.8rem; color: var(--muted); margin-top: 0.1rem; }
 
-  /* ── SECTION HEADERS ──────────────────────────────────────────── */
-  .section { margin-bottom: 2.5rem; }
-  .section-header {
-    display: flex;
-    align-items: baseline;
-    gap: 0.75rem;
-    margin-bottom: 1.25rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 2px solid var(--light);
-  }
-  .section-number {
-    font-family: 'DM Serif Display', serif;
-    font-size: 2rem;
-    color: var(--light);
-    line-height: 1;
-    flex-shrink: 0;
-  }
-  .section-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--navy);
-  }
-  .section-sub { font-size: 0.82rem; color: var(--muted); margin-top: 0.1rem; }
+/* ── CHART CARD ──────────────────────────────────────────────────────── */
+.chart-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 16px; padding: 1.5rem; margin-bottom: 1.25rem;
+}
+.chart-title {
+  font-size: 0.78rem; font-weight: 600; color: var(--purple);
+  text-transform: uppercase; letter-spacing: 0.06em;
+  margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;
+}
+.chart-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--purple-mid); flex-shrink: 0; }
+.chart-dot.yellow { background: var(--yellow-deep); }
+.chart-dot.green  { background: var(--green); }
+.chart-dot.red    { background: var(--red); }
 
-  /* ── CHART CARDS ─────────────────────────────────────────────── */
-  .chart-card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-  .chart-title {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--navy);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 1.25rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .chart-title-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--blue);
-    flex-shrink: 0;
-  }
-  .chart-title-dot.green { background: var(--green); }
-  .chart-title-dot.orange { background: var(--orange); }
-  .chart-title-dot.red { background: var(--red); }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
 
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.legend { display: flex; gap: 1.25rem; margin-bottom: 1rem; font-size: 0.78rem; flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 0.4rem; }
+.legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
 
-  /* ── FIT TABLE ───────────────────────────────────────────────── */
-  .fit-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.82rem;
-  }
-  .fit-table th {
-    padding: 0.5rem 0.75rem;
-    text-align: left;
-    font-size: 0.72rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--muted);
-    border-bottom: 1px solid var(--border);
-    white-space: nowrap;
-  }
-  .fit-table th.right { text-align: right; }
-  .fit-table td {
-    padding: 0.45rem 0.75rem;
-    border-bottom: 1px solid var(--border);
-    vertical-align: middle;
-  }
-  .fit-table tr:last-child td { border-bottom: none; }
-  .fit-table tr:hover td { background: var(--grey); }
-  .cat-badge {
-    display: inline-block;
-    padding: 0.15rem 0.55rem;
-    border-radius: 100px;
-    font-size: 0.68rem;
-    font-weight: 500;
-  }
-  .bar-cell { min-width: 120px; }
-  .fit-bar {
-    height: 8px;
-    border-radius: 4px;
-    display: flex;
-    overflow: hidden;
-    gap: 1px;
-  }
-  .fit-bar-goed   { background: var(--green); }
-  .fit-bar-beter  { background: var(--orange); }
-  .fit-bar-niet   { background: var(--red); }
-  .pct-green { color: var(--green); font-weight: 600; }
-  .pct-orange { color: var(--orange); font-weight: 600; }
-  .pct-red { color: var(--red); font-weight: 600; }
+/* ── BENCHMARK BADGE ─────────────────────────────────────────────────── */
+.bench-note {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: var(--purple-tint); border: 1px solid var(--purple-pale);
+  border-radius: 6px; padding: 0.3rem 0.7rem;
+  font-size: 0.74rem; color: var(--purple-soft);
+  margin-bottom: 1rem;
+}
+.bench-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--purple-soft); }
 
-  .cat-row td {
-    padding: 0.3rem 0.75rem;
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--muted);
-    background: var(--grey);
-  }
+/* ── FIT TABLE ───────────────────────────────────────────────────────── */
+.fit-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+.fit-table th {
+  padding: 0.5rem 0.75rem; text-align: left;
+  font-size: 0.68rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--muted); border-bottom: 1px solid var(--border); white-space: nowrap;
+}
+.fit-table th.right { text-align: right; }
+.fit-table td { padding: 0.42rem 0.75rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.fit-table tr:last-child td { border-bottom: none; }
+.fit-table tr.data-row:hover td { background: var(--purple-tint); }
+.cat-row td {
+  padding: 0.3rem 0.75rem; font-size: 0.67rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  color: var(--purple-soft); background: var(--grey);
+}
+.cat-badge {
+  display: inline-block; padding: 0.12rem 0.5rem;
+  border-radius: 100px; font-size: 0.66rem; font-weight: 600;
+}
+.fit-bar { height: 7px; border-radius: 3px; display: flex; overflow: hidden; gap: 1px; }
+.fit-bar-goed  { background: var(--green); }
+.fit-bar-beter { background: var(--orange); }
+.fit-bar-niet  { background: var(--red); }
+.pct-green  { color: var(--green);  font-weight: 600; }
+.pct-orange { color: var(--orange); font-weight: 600; }
+.pct-red    { color: var(--red);    font-weight: 600; }
 
-  /* ── VERTREK TABLE ───────────────────────────────────────────── */
-  .vertrek-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 0.75rem;
-  }
-  .vertrek-card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  .vertrek-name {
-    font-size: 0.82rem;
-    font-weight: 500;
-    color: var(--navy);
-  }
-  .vertrek-bar-wrap {
-    height: 6px;
-    background: var(--border);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-  .vertrek-bar-fill {
-    height: 100%;
-    border-radius: 3px;
-    background: var(--red);
-    transition: width 0.6s cubic-bezier(.22,.68,0,1.2);
-  }
-  .vertrek-pct {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.5rem;
-    color: var(--red);
-    line-height: 1;
-  }
+/* Benchmark delta pill */
+.delta {
+  display: inline-block; font-size: 0.65rem; font-weight: 600;
+  padding: 0.08rem 0.35rem; border-radius: 4px; margin-left: 3px;
+}
+.delta-pos { background: var(--lgreen);  color: #0E6E3C; }
+.delta-neg { background: var(--lred);    color: #8B1D14; }
+.delta-neu { background: var(--grey);    color: var(--muted); }
 
-  /* ── RICHTING ────────────────────────────────────────────────── */
-  .richting-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 0.75rem;
-  }
-  .richting-card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1rem;
-  }
-  .richting-name {
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: var(--navy);
-    margin-bottom: 0.6rem;
-  }
-  .richting-bars { display: flex; flex-direction: column; gap: 0.35rem; }
-  .richting-row { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; }
-  .richting-label { width: 44px; color: var(--muted); flex-shrink: 0; }
-  .richting-bar-wrap { flex: 1; height: 14px; background: var(--border); border-radius: 4px; overflow: hidden; }
-  .richting-bar-meer   { height: 100%; background: var(--green); border-radius: 4px; }
-  .richting-bar-minder { height: 100%; background: var(--orange); border-radius: 4px; }
-  .richting-n { font-weight: 600; color: var(--navy); min-width: 16px; text-align: right; }
+/* ── VERTREK CARDS ───────────────────────────────────────────────────── */
+.vertrek-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(200px,1fr)); gap: 0.75rem; }
+.vertrek-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1rem; display: flex; flex-direction: column; gap: 0.45rem;
+}
+.vertrek-pct { font-family: 'Figtree', sans-serif; font-weight: 900; font-size: 1.6rem; color: var(--red); line-height: 1; letter-spacing: -0.02em; }
+.vertrek-name { font-size: 0.8rem; font-weight: 500; color: var(--purple); }
+.vertrek-bar-wrap { height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.vertrek-bar-fill { height: 100%; background: var(--red); border-radius: 3px; }
 
-  /* ── BELANG RANKING ──────────────────────────────────────────── */
-  .belang-list { display: flex; flex-direction: column; gap: 0.45rem; }
-  .belang-row {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-size: 0.82rem;
-  }
-  .belang-rank {
-    width: 22px;
-    text-align: right;
-    color: var(--muted);
-    font-size: 0.72rem;
-    flex-shrink: 0;
-  }
-  .belang-name { width: 175px; flex-shrink: 0; color: var(--navy); }
-  .belang-bar-wrap { flex: 1; height: 10px; background: var(--border); border-radius: 5px; overflow: hidden; }
-  .belang-bar-fill {
-    height: 100%;
-    background: var(--blue);
-    border-radius: 5px;
-    transition: width 0.5s ease;
-  }
-  .belang-score { width: 36px; text-align: right; font-weight: 600; color: var(--navy); font-size: 0.8rem; flex-shrink: 0; }
+/* ── RICHTING CARDS ──────────────────────────────────────────────────── */
+.richting-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(195px,1fr)); gap: 0.75rem; }
+.richting-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; }
+.richting-name { font-size: 0.78rem; font-weight: 500; color: var(--purple); margin-bottom: 0.55rem; }
+.richting-row { display: flex; align-items: center; gap: 0.5rem; font-size: 0.73rem; margin-bottom: 0.3rem; }
+.richting-label { width: 42px; color: var(--muted); flex-shrink: 0; }
+.richting-bar-wrap { flex: 1; height: 12px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.richting-bar-meer   { height: 100%; background: var(--green); border-radius: 4px; }
+.richting-bar-minder { height: 100%; background: var(--orange); border-radius: 4px; }
+.richting-n { font-weight: 700; min-width: 14px; text-align: right; }
 
-  /* ── OPEN ANTWOORDEN ─────────────────────────────────────────── */
-  .open-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-  .open-col-header {
-    font-size: 0.72rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 0.4rem 0.75rem;
-    border-radius: 6px;
-    margin-bottom: 0.6rem;
-  }
-  .open-col-header.goed   { background: var(--lgreen); color: #146B40; }
-  .open-col-header.beter  { background: var(--lorange); color: #8B4200; }
-  .open-col-header.niet   { background: var(--lred); color: #8B2010; }
-  .open-quote {
-    background: var(--grey);
-    border-left: 3px solid var(--border);
-    padding: 0.5rem 0.75rem;
-    border-radius: 0 6px 6px 0;
-    font-size: 0.8rem;
-    color: var(--text);
-    margin-bottom: 0.4rem;
-    line-height: 1.5;
-  }
-  .open-empty { font-size: 0.78rem; color: var(--muted); font-style: italic; }
+/* ── BELANG LIST ─────────────────────────────────────────────────────── */
+.belang-list { display: flex; flex-direction: column; gap: 0.4rem; }
+.belang-row { display: flex; align-items: center; gap: 0.75rem; font-size: 0.8rem; }
+.belang-rank { width: 20px; text-align: right; color: var(--muted); font-size: 0.7rem; flex-shrink: 0; }
+.belang-name { width: 170px; flex-shrink: 0; color: var(--purple); }
+.belang-bar-wrap { flex: 1; height: 9px; background: var(--border); border-radius: 5px; overflow: hidden; position: relative; }
+.belang-bar-fill  { height: 100%; border-radius: 5px; }
+.belang-bar-bench { position: absolute; top: 0; height: 100%; border-radius: 5px; opacity: 0.35; }
+.belang-score { width: 32px; text-align: right; font-weight: 600; color: var(--purple); font-size: 0.78rem; flex-shrink: 0; }
 
-  /* ── ANIMATIONS ──────────────────────────────────────────────── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .section { animation: fadeUp 0.4s ease both; }
-  .section:nth-child(1) { animation-delay: 0.05s; }
-  .section:nth-child(2) { animation-delay: 0.1s; }
-  .section:nth-child(3) { animation-delay: 0.15s; }
-  .section:nth-child(4) { animation-delay: 0.2s; }
-  .section:nth-child(5) { animation-delay: 0.25s; }
-  .section:nth-child(6) { animation-delay: 0.3s; }
+/* ── OPEN ANTWOORDEN ─────────────────────────────────────────────────── */
+.open-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; }
+.open-col-hdr {
+  font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.05em; padding: 0.35rem 0.65rem;
+  border-radius: 6px; margin-bottom: 0.6rem;
+}
+.open-col-hdr.goed  { background: var(--lgreen);  color: #0E6E3C; }
+.open-col-hdr.beter { background: var(--lorange);  color: #7A3A00; }
+.open-col-hdr.niet  { background: var(--lred);     color: #7A1A10; }
+.open-quote {
+  background: var(--grey); border-left: 3px solid var(--border);
+  padding: 0.45rem 0.7rem; border-radius: 0 6px 6px 0;
+  font-size: 0.78rem; color: var(--text); margin-bottom: 0.35rem; line-height: 1.5;
+}
+.open-empty { font-size: 0.76rem; color: var(--muted); font-style: italic; }
 
-  /* ── LEGEND ──────────────────────────────────────────────────── */
-  .legend {
-    display: flex;
-    gap: 1.25rem;
-    margin-bottom: 1rem;
-    font-size: 0.78rem;
-  }
-  .legend-item { display: flex; align-items: center; gap: 0.4rem; }
-  .legend-dot {
-    width: 10px; height: 10px;
-    border-radius: 2px;
-    flex-shrink: 0;
-  }
+/* ── RAPPORT HEADER & INTRO TEKSTEN ─────────────────────────────────── */
+.rapport-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 3px solid var(--yellow);
+}
+.rapport-title {
+  font-family: 'Figtree', sans-serif;
+  font-size: 2rem; font-weight: 900;
+  color: var(--purple); letter-spacing: -0.03em;
+  text-transform: uppercase; line-height: 1.1;
+  margin-bottom: 0.25rem;
+}
+.rapport-subtitle {
+  font-size: 0.9rem; color: var(--muted); font-weight: 400;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.rapport-subtitle strong { color: var(--purple); font-weight: 600; }
+.rapport-code-chip {
+  display: inline-block;
+  background: var(--yellow); color: var(--purple);
+  font-weight: 700; font-size: 0.75rem;
+  padding: 0.2rem 0.65rem; border-radius: 100px;
+  letter-spacing: 0.04em;
+}
+.intro-block {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--purple-soft);
+  border-radius: 0 12px 12px 0;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: var(--text);
+}
+.intro-block p { margin-bottom: 0.5rem; }
+.intro-block p:last-child { margin-bottom: 0; }
+.intro-block strong { color: var(--purple); font-weight: 600; }
+.intro-block .intro-stat {
+  display: inline-block;
+  background: var(--purple-tint);
+  color: var(--purple); font-weight: 700;
+  padding: 0.05rem 0.45rem; border-radius: 4px;
+  font-size: 0.9em;
+}
+.intro-block.yellow-accent { border-left-color: var(--yellow-deep); }
+.intro-block.section-intro {
+  border-left-color: var(--yellow-deep);
+  background: var(--yellow-pale);
+  margin-bottom: 1rem;
+}
+.footer {
+  text-align: center; padding: 1.5rem; font-size: 0.74rem; color: var(--muted);
+  border-top: 1px solid var(--border); background: var(--white); margin-top: 1.5rem;
+}
 
-  /* ── FOOTER ──────────────────────────────────────────────────── */
-  .footer {
-    text-align: center;
-    padding: 2rem;
-    font-size: 0.75rem;
-    color: var(--muted);
-    border-top: 1px solid var(--border);
-    background: var(--white);
-    margin-top: 2rem;
-  }
+/* ── PRINT / PDF ─────────────────────────────────────────────────────── */
+@media print {
+  body { background: white; }
+  .top-bar { display: none !important; }
+  .section { animation: none !important; opacity: 1 !important; break-inside: avoid; }
+  .chart-card { break-inside: avoid; }
+  .kpi-grid { break-inside: avoid; }
+  #firmcode-screen, #upload-screen { display: none !important; }
+  #dashboard { display: block !important; }
+  .content { padding: 0; max-width: 100%; }
+  .print-header { display: block !important; }
+}
+.print-header {
+  display: none;
+  font-family: 'Figtree', sans-serif;
+  font-size: 1.5rem; font-weight: 900; color: var(--purple);
+  text-transform: uppercase; letter-spacing: 0.02em;
+  padding: 1rem 0 0.5rem;
+  border-bottom: 3px solid var(--yellow);
+  margin-bottom: 1.5rem;
+}
+.print-header span { color: var(--yellow-deep); }
 
-  @media (max-width: 900px) {
-    .kpi-grid { grid-template-columns: repeat(3, 1fr); }
-    .two-col { grid-template-columns: 1fr; }
-    .open-grid { grid-template-columns: 1fr; }
-  }
-  @media (max-width: 600px) {
-    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
-  }
+@media (max-width: 900px) {
+  .kpi-grid { grid-template-columns: repeat(3,1fr); }
+  .two-col { grid-template-columns: 1fr; }
+  .open-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .kpi-grid { grid-template-columns: repeat(2,1fr); }
+}
 </style>
 </head>
 <body>
 
-<!-- ══ UPLOAD SCREEN ════════════════════════════════════════════════════ -->
+<!-- ══ UPLOAD SCREEN ═══════════════════════════════════════════════════ -->
 <div id="upload-screen">
   <div class="upload-logo">Werk van <span>Waarde</span></div>
-  <div class="upload-tagline">Quick Scan Dashboard</div>
-
+  <div class="upload-tagline">Quick Scan Dashboard — Bedrijfsadviseurs</div>
   <div class="upload-card">
     <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
       <div class="drop-icon">📊</div>
-      <div class="drop-title">Sleep je Qualtrics-export hierheen</div>
-      <div class="drop-sub">of klik om een bestand te kiezen</div>
+      <div class="drop-title">Sleep de Google Sheets export hierheen</div>
+      <div class="drop-sub">of klik om te bladeren (.xlsx)</div>
       <input type="file" id="file-input" accept=".xlsx,.xls">
     </div>
-    <button class="upload-btn" onclick="document.getElementById('file-input').click()">
-      Bestand kiezen (.xlsx)
-    </button>
+    <button class="upload-btn" onclick="document.getElementById('file-input').click()">Bestand kiezen</button>
     <div class="upload-note">
-      Verwacht: ruwe Qualtrics-export met koprijen intact.<br>
-      Gegevens worden alleen lokaal verwerkt — niets wordt geüpload.
+      Download de volledige dataset als .xlsx via Google Sheets → Bestand → Downloaden.<br>
+      Gegevens worden alleen lokaal verwerkt in uw browser.
     </div>
   </div>
 </div>
 
-<!-- ══ DASHBOARD ════════════════════════════════════════════════════════ -->
+<!-- ══ FIRM CODE SCREEN ════════════════════════════════════════════════ -->
+<div id="firmcode-screen">
+  <div class="upload-logo" style="margin-bottom:0.2rem">Werk van <span>Waarde</span></div>
+  <div class="upload-tagline" style="margin-bottom:2rem">Vul de bedrijfscode in</div>
+  <div class="firmcode-card">
+    <div class="firmcode-title">Bedrijfscode</div>
+    <div class="firmcode-sub">Vul de unieke code in die bij uw bedrijf hoort.</div>
+    <div class="firmcode-input-wrap">
+      <input type="text" class="firmcode-input" id="firmcode-input"
+             placeholder="bijv. WVW-2025-001"
+             maxlength="30"
+             onkeydown="if(event.key==='Enter') submitFirmCode()">
+    </div>
+    <button class="firmcode-btn" onclick="submitFirmCode()">Resultaten laden →</button>
+    <div class="firmcode-error" id="firmcode-error">
+      Onbekende bedrijfscode. Controleer de code en probeer opnieuw.
+    </div>
+    <button class="firmcode-back" onclick="resetToUpload()">← Ander bestand kiezen</button>
+    <div class="firmcode-stats" id="firmcode-stats"></div>
+  </div>
+</div>
+
+<!-- ══ DASHBOARD ═══════════════════════════════════════════════════════ -->
 <div id="dashboard">
+  <div class="print-header">Werk van <span>Waarde</span> — Quick Scan Rapport</div>
   <div class="top-bar">
-    <div class="top-bar-brand">Werk van <span>Waarde</span> — Quick Scan</div>
-    <div class="top-bar-meta">
-      <span>Bestand: <strong id="meta-filename">—</strong></span>
-      <span>n = <strong id="meta-n">—</strong> respondenten</span>
-      <button class="reset-btn" onclick="resetDashboard()">← Nieuw bestand</button>
+    <div class="top-bar-brand">Werk van <span>Waarde</span></div>
+    <div class="top-bar-right">
+      <div class="top-bar-meta">
+        Bedrijf: <strong id="meta-firm">—</strong> &nbsp;·&nbsp;
+        n = <strong id="meta-n">—</strong>
+      </div>
+      <div class="top-bar-chip" id="meta-chip">—</div>
+      <button class="top-btn pdf" onclick="window.print()">⬇ Download PDF</button>
+      <button class="top-btn" onclick="resetToFirmCode()">← Andere code</button>
+      <button class="top-btn" onclick="resetToUpload()">Nieuw bestand</button>
     </div>
   </div>
-
   <div class="content" id="dash-content"></div>
-
   <div class="footer">
-    Werk van Waarde — Universiteit Groningen &nbsp;·&nbsp;
-    Gegevens worden uitsluitend lokaal verwerkt
+    Werk van Waarde — Universiteit Groningen &nbsp;·&nbsp; Alle gegevens lokaal verwerkt
   </div>
 </div>
 
@@ -542,26 +563,52 @@
 // ═══════════════════════════════════════════════════════════════════════
 // CONSTRUCT CONFIG
 // ═══════════════════════════════════════════════════════════════════════
-const CONSTRUCTS = [{"name":"Ontwikkelmogelijkheden","cat":"Leren","bidir":false,"wvw":78,"lk":102,"richting":null,"vertrek":22},{"name":"Competentie","cat":"Leren","bidir":true,"wvw":79,"lk":103,"richting":23,"vertrek":24},{"name":"Autonomie","cat":"Autonomie","bidir":true,"wvw":80,"lk":104,"richting":25,"vertrek":26},{"name":"Verantwoordelijkheid","cat":"Autonomie","bidir":true,"wvw":81,"lk":105,"richting":27,"vertrek":28},{"name":"Collega's","cat":"Relaties","bidir":true,"wvw":82,"lk":106,"richting":29,"vertrek":30},{"name":"Leidinggevende","cat":"Relaties","bidir":true,"wvw":83,"lk":107,"richting":31,"vertrek":32},{"name":"Psych. veiligheid","cat":"Relaties","bidir":false,"wvw":84,"lk":108,"richting":null,"vertrek":33},{"name":"Inclusie & diversiteit","cat":"Relaties","bidir":true,"wvw":85,"lk":109,"richting":34,"vertrek":35},{"name":"Authenticiteit","cat":"Relaties","bidir":false,"wvw":86,"lk":110,"richting":null,"vertrek":36},{"name":"Zinvolheid","cat":"Zinvolheid","bidir":false,"wvw":87,"lk":111,"richting":null,"vertrek":37},{"name":"Aansluiting waarden","cat":"Zinvolheid","bidir":false,"wvw":88,"lk":112,"richting":null,"vertrek":38},{"name":"Taakinhoud","cat":"Zinvolheid","bidir":true,"wvw":89,"lk":113,"richting":39,"vertrek":40},{"name":"Werkdruk","cat":"Werkdruk","bidir":true,"wvw":90,"lk":114,"richting":41,"vertrek":42},{"name":"Lichamelijke uitd.","cat":"Werkdruk","bidir":true,"wvw":91,"lk":115,"richting":43,"vertrek":44},{"name":"Emotionele uitd.","cat":"Werkdruk","bidir":true,"wvw":92,"lk":116,"richting":45,"vertrek":46},{"name":"Mentale uitdaging","cat":"Werkdruk","bidir":true,"wvw":93,"lk":117,"richting":47,"vertrek":48},{"name":"Werk-privébalans","cat":"Werkdruk","bidir":true,"wvw":94,"lk":118,"richting":49,"vertrek":50},{"name":"Productiviteit","cat":"Werkdruk","bidir":true,"wvw":95,"lk":119,"richting":51,"vertrek":52},{"name":"Werkuren","cat":"Werktijden","bidir":true,"wvw":96,"lk":120,"richting":53,"vertrek":54},{"name":"Thuiswerken","cat":"Werktijden","bidir":true,"wvw":97,"lk":121,"richting":55,"vertrek":56},{"name":"Salaris","cat":"Beloning","bidir":false,"wvw":98,"lk":122,"richting":null,"vertrek":57},{"name":"Sec. arbeidsvoorw.","cat":"Beloning","bidir":false,"wvw":99,"lk":123,"richting":null,"vertrek":58},{"name":"Contracttype","cat":"Beloning","bidir":true,"wvw":100,"lk":124,"richting":59,"vertrek":60},{"name":"Baanzekerheid","cat":"Beloning","bidir":false,"wvw":101,"lk":125,"richting":null,"vertrek":61}];
+const CONSTRUCTS = [
+  {name:"Ontwikkelmogelijkheden",cat:"Leren",      bidir:false,wvw:78,lk:102,richting:null,vertrek:22},
+  {name:"Competentie",           cat:"Leren",      bidir:true, wvw:79,lk:103,richting:23,  vertrek:24},
+  {name:"Autonomie",             cat:"Autonomie",  bidir:true, wvw:80,lk:104,richting:25,  vertrek:26},
+  {name:"Verantwoordelijkheid",  cat:"Autonomie",  bidir:true, wvw:81,lk:105,richting:27,  vertrek:28},
+  {name:"Collega's",             cat:"Relaties",   bidir:true, wvw:82,lk:106,richting:29,  vertrek:30},
+  {name:"Leidinggevende",        cat:"Relaties",   bidir:true, wvw:83,lk:107,richting:31,  vertrek:32},
+  {name:"Psych. veiligheid",     cat:"Relaties",   bidir:false,wvw:84,lk:108,richting:null,vertrek:33},
+  {name:"Inclusie & diversiteit",cat:"Relaties",   bidir:true, wvw:85,lk:109,richting:34,  vertrek:35},
+  {name:"Authenticiteit",        cat:"Relaties",   bidir:false,wvw:86,lk:110,richting:null,vertrek:36},
+  {name:"Zinvolheid",            cat:"Zinvolheid", bidir:false,wvw:87,lk:111,richting:null,vertrek:37},
+  {name:"Aansluiting waarden",   cat:"Zinvolheid", bidir:false,wvw:88,lk:112,richting:null,vertrek:38},
+  {name:"Taakinhoud",            cat:"Zinvolheid", bidir:true, wvw:89,lk:113,richting:39,  vertrek:40},
+  {name:"Werkdruk",              cat:"Werkdruk",   bidir:true, wvw:90,lk:114,richting:41,  vertrek:42},
+  {name:"Lichamelijke uitd.",    cat:"Werkdruk",   bidir:true, wvw:91,lk:115,richting:43,  vertrek:44},
+  {name:"Emotionele uitd.",      cat:"Werkdruk",   bidir:true, wvw:92,lk:116,richting:45,  vertrek:46},
+  {name:"Mentale uitdaging",     cat:"Werkdruk",   bidir:true, wvw:93,lk:117,richting:47,  vertrek:48},
+  {name:"Werk-privébalans",      cat:"Werkdruk",   bidir:true, wvw:94,lk:118,richting:49,  vertrek:50},
+  {name:"Productiviteit",        cat:"Werkdruk",   bidir:true, wvw:95,lk:119,richting:51,  vertrek:52},
+  {name:"Werkuren",              cat:"Werktijden", bidir:true, wvw:96,lk:120,richting:53,  vertrek:54},
+  {name:"Thuiswerken",           cat:"Werktijden", bidir:true, wvw:97,lk:121,richting:55,  vertrek:56},
+  {name:"Salaris",               cat:"Beloning",   bidir:false,wvw:98,lk:122,richting:null,vertrek:57},
+  {name:"Sec. arbeidsvoorw.",    cat:"Beloning",   bidir:false,wvw:99,lk:123,richting:null,vertrek:58},
+  {name:"Contracttype",          cat:"Beloning",   bidir:true, wvw:100,lk:124,richting:59, vertrek:60},
+  {name:"Baanzekerheid",         cat:"Beloning",   bidir:false,wvw:101,lk:125,richting:null,vertrek:61},
+];
 
-const CAT_COLORS = {
-  'Leren':      '#4F46E5',
-  'Autonomie':  '#059669',
-  'Relaties':   '#D97706',
-  'Zinvolheid': '#7C3AED',
-  'Werkdruk':   '#DC2626',
-  'Werktijden': '#0891B2',
-  'Beloning':   '#B45309',
+const CAT_COLOR = {
+  Leren:'#6f3364', Autonomie:'#2d8a4e', Relaties:'#c96b10',
+  Zinvolheid:'#8a4a7e', Werkdruk:'#b83232', Werktijden:'#1a7a8a', Beloning:'#7a5c10'
 };
 const CAT_BG = {
-  'Leren':'#EEF2FF','Autonomie':'#ECFDF5','Relaties':'#FFFBEB',
-  'Zinvolheid':'#F5F3FF','Werkdruk':'#FEF2F2','Werktijden':'#ECFEFF','Beloning':'#FFFBEB'
+  Leren:'#f5eff4', Autonomie:'#e8f5ed', Relaties:'#fdf1e3',
+  Zinvolheid:'#f5edf4', Werkdruk:'#faeaea', Werktijden:'#e3f4f6', Beloning:'#faf3e3'
 };
+
+// ═══════════════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════════════
+let allRows = [];   // all data rows from the sheet
+let firmCodes = []; // all unique firm codes found
 
 // ═══════════════════════════════════════════════════════════════════════
 // FILE HANDLING
 // ═══════════════════════════════════════════════════════════════════════
-const dropZone = document.getElementById('drop-zone');
+const dropZone  = document.getElementById('drop-zone');
 const fileInput = document.getElementById('file-input');
 
 dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
@@ -576,11 +623,35 @@ function handleFile(file) {
   const reader = new FileReader();
   reader.onload = e => {
     try {
-      const wb = XLSX.read(e.target.result, { type: 'array' });
-      const ws = wb.Sheets[wb.SheetNames[0]];
-      const raw = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
-      const stats = processData(raw);
-      renderDashboard(stats, file.name);
+      const wb   = XLSX.read(e.target.result, { type: 'array' });
+      const ws   = wb.Sheets[wb.SheetNames[0]];
+      const raw  = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+
+      // Data rows: skip rows 0 (short headers) and 1 (long labels)
+      // Valid rows: ResponseId (col 8) starts with R_
+      allRows = raw.slice(2).filter(r => String(r[8] || '').startsWith('R_'));
+
+      if (allRows.length === 0) {
+        alert('Geen geldige respondenten gevonden. Controleer of je de juiste Qualtrics-export gebruikt (ResponseId moet beginnen met R_).');
+        return;
+      }
+
+      // Detect firm-code column
+      // Look for a header named FirmCode, Firmcode, firm_code, BedrijfsCode etc. in row 0
+      const headers = raw[0] || [];
+      const firmColIdx = detectFirmCodeCol(headers);
+
+      if (firmColIdx === -1) {
+        // No firm-code column found — show warning and allow demo mode
+        firmCodes = ['(demo — geen FirmCode kolom gevonden)'];
+        allRows.forEach(r => r._firmCode = 'DEMO');
+        showFirmCodeScreen(file.name, true);
+      } else {
+        // Extract unique firm codes
+        allRows.forEach(r => r._firmCode = String(r[firmColIdx] || '').trim().toUpperCase());
+        firmCodes = [...new Set(allRows.map(r => r._firmCode).filter(c => c))].sort();
+        showFirmCodeScreen(file.name, false);
+      }
     } catch(err) {
       alert('Fout bij inlezen: ' + err.message);
     }
@@ -588,57 +659,115 @@ function handleFile(file) {
   reader.readAsArrayBuffer(file);
 }
 
+function detectFirmCodeCol(headers) {
+  const candidates = ['firmcode','firm_code','bedrijfscode','bedrijf_code',
+                       'companycode','company_code','organisatiecode','orgcode',
+                       'firm','bedrijf','organisation','organization'];
+  for (let i = 0; i < headers.length; i++) {
+    const h = String(headers[i] || '').toLowerCase().replace(/[\s_-]/g, '');
+    if (candidates.includes(h)) return i;
+  }
+  return -1;
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// SCREENS
+// ═══════════════════════════════════════════════════════════════════════
+function showFirmCodeScreen(filename, demoMode) {
+  document.getElementById('upload-screen').style.display    = 'none';
+  document.getElementById('firmcode-screen').style.display  = 'flex';
+  document.getElementById('dashboard').style.display        = 'none';
+
+  const statsEl = document.getElementById('firmcode-stats');
+  if (demoMode) {
+    statsEl.innerHTML = `<strong style="color:#FFB74D">⚠ Geen FirmCode kolom gevonden.</strong><br>
+      Voeg een kolom "FirmCode" toe aan de Qualtrics-export. Nu wordt de volledige dataset getoond als demo.<br>
+      Typ <strong>DEMO</strong> om door te gaan.`;
+  } else {
+    statsEl.innerHTML = `Bestand: <strong>${filename}</strong><br>
+      ${allRows.length} respondenten · ${firmCodes.length} bedrijven geladen`;
+  }
+  document.getElementById('firmcode-input').focus();
+}
+
+function submitFirmCode() {
+  const code = document.getElementById('firmcode-input').value.trim().toUpperCase();
+  const errEl = document.getElementById('firmcode-error');
+
+  const firmRows = allRows.filter(r => r._firmCode === code);
+  if (firmRows.length === 0) {
+    errEl.style.display = 'block';
+    errEl.textContent = `Geen respondenten gevonden voor code "${code}". Beschikbare codes: ${firmCodes.slice(0,8).join(', ')}${firmCodes.length > 8 ? '…' : ''}`;
+    return;
+  }
+  errEl.style.display = 'none';
+
+  const firmStats  = processRows(firmRows);
+  const benchStats = processRows(allRows);
+
+  document.getElementById('meta-firm').textContent = code;
+  document.getElementById('meta-n').textContent    = firmRows.length;
+  document.getElementById('meta-chip').textContent = code;
+
+  renderDashboard(firmStats, benchStats, code);
+}
+
+function resetToUpload() {
+  chartInstances.forEach(c => c.destroy()); chartInstances = [];
+  allRows = []; firmCodes = [];
+  document.getElementById('upload-screen').style.display   = 'flex';
+  document.getElementById('firmcode-screen').style.display = 'none';
+  document.getElementById('dashboard').style.display       = 'none';
+  document.getElementById('file-input').value = '';
+  document.getElementById('firmcode-input').value = '';
+}
+
+function resetToFirmCode() {
+  chartInstances.forEach(c => c.destroy()); chartInstances = [];
+  document.getElementById('firmcode-screen').style.display = 'flex';
+  document.getElementById('dashboard').style.display       = 'none';
+  document.getElementById('firmcode-input').value = '';
+  document.getElementById('firmcode-error').style.display = 'none';
+}
+
 // ═══════════════════════════════════════════════════════════════════════
 // DATA PROCESSING
 // ═══════════════════════════════════════════════════════════════════════
-function processData(raw) {
-  // Row 0 = short headers, row 1 = long labels, rows 2+ = data
-  // Identify data rows: ResponseId (col 8) starts with "R_"
-  const dataRows = raw.slice(2).filter(r => String(r[8] || '').startsWith('R_'));
-  const n = dataRows.length;
-  if (n === 0) throw new Error('Geen geldige respondenten gevonden (ResponseId begint niet met R_).');
+function processRows(rows) {
+  const n = rows.length;
+  const jobSat = avg(rows.map(r => +r[62]).filter(v => v > 0));
+  const jobHap = avg(rows.map(r => +r[63]).filter(v => v > 0));
+  const search = rows.filter(r => +r[64] === 1).length / n;
+  const leave  = rows.filter(r => +r[65] === 1).length / n;
 
-  // KPIs
-  const jobSat  = avg(dataRows.map(r => +r[62]).filter(v => v > 0));
-  const jobHap  = avg(dataRows.map(r => +r[63]).filter(v => v > 0));
-  const search  = dataRows.filter(r => +r[64] === 1).length / n;
-  const leave   = dataRows.filter(r => +r[65] === 1).length / n;
+  const constructs = CONSTRUCTS.map(c => {
+    const wvwVals = rows.map(r => r[c.wvw]);
+    const goed    = wvwVals.filter(v => v === 'Dit past goed').length  / n;
+    const beter   = wvwVals.filter(v => v === 'Dit kan beter').length  / n;
+    const niet    = wvwVals.filter(v => v === 'Dit past niet').length  / n;
 
-  // Per-construct stats
-  const constructs = CONSTRUCTS.map((c, i) => {
-    const wvwVals = dataRows.map(r => r[c.wvw]);
-    const total   = n;
-    const goed    = wvwVals.filter(v => v === 'Dit past goed').length  / total;
-    const beter   = wvwVals.filter(v => v === 'Dit kan beter').length  / total;
-    const niet    = wvwVals.filter(v => v === 'Dit past niet').length  / total;
-
-    const lkVals  = dataRows.map(r => +r[c.lk]).filter(v => v > 0);
+    const lkVals  = rows.map(r => +r[c.lk]).filter(v => v > 0);
     const lk      = lkVals.length ? avg(lkVals) : 0;
 
-    // Vertrekrisico: count vertrek=1 among those who said kan beter/past niet
     let vert = null;
     if (c.vertrek !== null) {
       const denom = wvwVals.filter(v => v === 'Dit kan beter' || v === 'Dit past niet').length;
-      const numer = dataRows.filter(r => +r[c.vertrek] === 1).length;
-      vert = denom > 0 ? numer / denom : 0;
+      vert = denom > 0 ? rows.filter(r => +r[c.vertrek] === 1).length / denom : 0;
     }
 
-    // Richting
     let meer = null, minder = null;
     if (c.bidir && c.richting !== null) {
-      meer   = dataRows.filter(r => +r[c.richting] === 1).length;
-      minder = dataRows.filter(r => +r[c.richting] === 2).length;
+      meer   = rows.filter(r => +r[c.richting] === 1).length;
+      minder = rows.filter(r => +r[c.richting] === 2).length;
     }
 
-    // Open antwoorden (only if construct has follow-up)
     return { ...c, goed, beter, niet, lk, vert, meer, minder };
   });
 
-  // Open antwoorden
   const open = {
-    goed:  dataRows.map(r => r[19]).filter(v => v && String(v).trim()),
-    beter: dataRows.map(r => r[20]).filter(v => v && String(v).trim()),
-    niet:  dataRows.map(r => r[21]).filter(v => v && String(v).trim()),
+    goed:  rows.map(r => r[19]).filter(v => v && String(v).trim()),
+    beter: rows.map(r => r[20]).filter(v => v && String(v).trim()),
+    niet:  rows.map(r => r[21]).filter(v => v && String(v).trim()),
   };
 
   return { n, jobSat, jobHap, search, leave, constructs, open };
@@ -646,115 +775,162 @@ function processData(raw) {
 
 function avg(arr) { return arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : 0; }
 function pct(v)   { return Math.round(v * 100); }
-function fmt1(v)  { return v.toFixed(1); }
+function fmt1(v)  { return (+v).toFixed(1); }
+
+function delta(firm, bench) {
+  const d = firm - bench;
+  if (Math.abs(d) < 0.02) return `<span class="delta delta-neu">≈ gem.</span>`;
+  const sign = d > 0 ? '+' : '';
+  const cls  = d > 0 ? 'delta-pos' : 'delta-neg';
+  return `<span class="delta ${cls}">${sign}${pct(d)}pp</span>`;
+}
 
 // ═══════════════════════════════════════════════════════════════════════
 // RENDER
 // ═══════════════════════════════════════════════════════════════════════
 let chartInstances = [];
 
-function resetDashboard() {
-  chartInstances.forEach(c => c.destroy());
-  chartInstances = [];
-  document.getElementById('dashboard').style.display = 'none';
-  document.getElementById('upload-screen').style.display = 'flex';
-  document.getElementById('file-input').value = '';
-}
-
-function renderDashboard(stats, filename) {
-  document.getElementById('upload-screen').style.display = 'none';
-  document.getElementById('dashboard').style.display = 'block';
-  document.getElementById('meta-filename').textContent = filename;
-  document.getElementById('meta-n').textContent = stats.n;
+function renderDashboard(firm, bench, code) {
+  chartInstances.forEach(c => c.destroy()); chartInstances = [];
+  document.getElementById('firmcode-screen').style.display = 'none';
+  document.getElementById('dashboard').style.display       = 'block';
 
   const el = document.getElementById('dash-content');
   el.innerHTML = '';
 
-  // ── KPI strip ────────────────────────────────────────────────────
+  // ── Rapport header ─────────────────────────────────────────────────
+  const headerEl = document.createElement('div');
+  headerEl.className = 'rapport-header';
+  headerEl.innerHTML = `
+    <div class="rapport-title">Werk van Waarde — Quick Scan</div>
+    <div class="rapport-subtitle">
+      Bedrijfscode <span class="rapport-code-chip">${code}</span>
+      <strong>&nbsp;·&nbsp;</strong>
+      <span>${firm.n} respondenten</span>
+    </div>`;
+  el.appendChild(headerEl);
+
+  // ── Introductie ────────────────────────────────────────────────────
+  const introEl = document.createElement('div');
+  introEl.className = 'intro-block';
+  const pctSearch = pct(firm.search);
+  const pctLeave  = pct(firm.leave);
+  const satWord   = firm.jobSat >= 4 ? 'hoog' : firm.jobSat >= 3 ? 'gemiddeld' : 'laag';
+  introEl.innerHTML = `
+    <p>Dit rapport geeft een overzicht van de resultaten van de <strong>Werk van Waarde Quick Scan</strong>
+    voor bedrijfscode <strong>${code}</strong>. De scan is ingevuld door
+    <span class="intro-stat">${firm.n} medewerkers</span>
+    en meet in hoeverre verschillende aspecten van het werk aansluiten bij wat medewerkers willen.
+    Ter vergelijking worden de resultaten steeds afgezet tegen het gemiddelde van de
+    <span class="intro-stat">totale steekproef (n=${bench.n})</span>.</p>
+    <p>De gemiddelde werktevredenheid binnen dit bedrijf is <span class="intro-stat">${fmt1(firm.jobSat)} / 5</span> — ${satWord}
+    ten opzichte van het steekproefgemiddelde van ${fmt1(bench.jobSat)}.
+    ${pctSearch}% van de medewerkers zoekt actief naar ander werk en ${pctLeave}% overweegt te vertrekken.</p>`;
+  el.appendChild(introEl);
+
+  // ── KPI strip ──────────────────────────────────────────────────────
   const kpiEl = document.createElement('div');
   kpiEl.className = 'kpi-grid';
-  kpiEl.style.marginBottom = '2rem';
   kpiEl.innerHTML = `
     <div class="kpi-card">
       <div class="kpi-label">Respondenten</div>
-      <div class="kpi-value">${stats.n}</div>
-      <div class="kpi-sub">deelnemers</div>
+      <div class="kpi-value">${firm.n}</div>
+      <div class="kpi-sub">${bench.n} in totale steekproef</div>
     </div>
-    <div class="kpi-card green">
+    <div class="kpi-card yellow">
       <div class="kpi-label">Werktevredenheid</div>
-      <div class="kpi-value">${fmt1(stats.jobSat)}</div>
-      <div class="kpi-sub">gemiddeld op 5-punt schaal</div>
+      <div class="kpi-value">${fmt1(firm.jobSat)}</div>
+      <div class="kpi-sub">schaal 1–5</div>
+      <div class="kpi-bench">Gem. totaal: <span>${fmt1(bench.jobSat)}</span></div>
+    </div>
+    <div class="kpi-card yellow">
+      <div class="kpi-label">Werkgeluk</div>
+      <div class="kpi-value">${fmt1(firm.jobHap)}</div>
+      <div class="kpi-sub">schaal 1–5</div>
+      <div class="kpi-bench">Gem. totaal: <span>${fmt1(bench.jobHap)}</span></div>
     </div>
     <div class="kpi-card green">
-      <div class="kpi-label">Werkgeluk</div>
-      <div class="kpi-value">${fmt1(stats.jobHap)}</div>
-      <div class="kpi-sub">gemiddeld op 5-punt schaal</div>
-    </div>
-    <div class="kpi-card orange">
       <div class="kpi-label">Actief zoekend</div>
-      <div class="kpi-value">${pct(stats.search)}%</div>
+      <div class="kpi-value">${pct(firm.search)}%</div>
       <div class="kpi-sub">zoekt actief naar ander werk</div>
+      <div class="kpi-bench">Gem. totaal: <span>${pct(bench.search)}%</span></div>
     </div>
     <div class="kpi-card red">
       <div class="kpi-label">Vertrekintentie</div>
-      <div class="kpi-value">${pct(stats.leave)}%</div>
+      <div class="kpi-value">${pct(firm.leave)}%</div>
       <div class="kpi-sub">overweegt te vertrekken</div>
+      <div class="kpi-bench">Gem. totaal: <span>${pct(bench.leave)}%</span></div>
     </div>`;
   el.appendChild(kpiEl);
 
-  // ── Section 1: Fit overview ───────────────────────────────────────
+  // ── Section 1: Fit ──────────────────────────────────────────────────
   el.appendChild(makeSection('1', 'Hoe past het werk?',
-    'Verdeling "past goed / kan beter / past niet" per construct', s => {
+    `Bedrijf ${code} vs. totale steekproef`, s => {
 
-    // Stacked horizontal bar chart
+    // Sectie-introductie
+    const introS1 = document.createElement('div');
+    introS1.className = 'intro-block section-intro';
+    const topGoed  = [...firm.constructs].sort((a,b)=>b.goed-a.goed).slice(0,3).map(c=>c.name).join(', ');
+    const topNiet  = [...firm.constructs].filter(c=>c.niet>0).sort((a,b)=>b.niet-a.niet).slice(0,2).map(c=>c.name).join(', ');
+    const pctGoedGem = Math.round(firm.constructs.reduce((s,c)=>s+c.goed,0)/firm.constructs.length*100);
+    introS1.innerHTML = `
+      <p><strong>Wat hebben we gemeten?</strong> Medewerkers hebben voor elk van de
+      <strong>24 werk-aspecten</strong> aangegeven in hoeverre dit aansluit bij wat zij willen:
+      <strong style="color:var(--green)">past goed</strong>,
+      <strong style="color:var(--orange)">kan beter</strong>, of
+      <strong style="color:var(--red)">past niet</strong>.
+      Gemiddeld genomen scoort dit bedrijf <span class="intro-stat">${pctGoedGem}% "past goed"</span>
+      over alle aspecten heen.</p>
+      <p><strong>Hoe lees je de grafiek?</strong> Elke balk toont de verdeling voor één aspect.
+      Hoe meer groen, hoe beter de aansluiting. De aspecten zijn gegroepeerd per thema
+      (Leren, Autonomie, Relaties, etc.). Sterkste punten: <strong>${topGoed || '—'}</strong>.
+      ${topNiet ? `Aandachtspunten: <strong>${topNiet}</strong>.` : 'Geen aspecten scoren uitsluitend "past niet".'}</p>`;
+    s.appendChild(introS1);
+
+    const noteEl = document.createElement('div');
+    noteEl.className = 'bench-note';
+    noteEl.innerHTML = `<span class="bench-dot"></span> Gestippelde lijn = gemiddelde totale steekproef (n=${bench.n})`;
+    s.appendChild(noteEl);
+
     const chartCard = document.createElement('div');
     chartCard.className = 'chart-card';
     chartCard.innerHTML = `
-      <div class="chart-title"><span class="chart-title-dot"></span>Fit per construct — alle 24 aspecten</div>
+      <div class="chart-title"><span class="chart-dot"></span>Fit per construct — alle 24 aspecten</div>
       <div class="legend">
-        <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div> Past goed</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--orange)"></div> Kan beter</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div> Past niet</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Past goed</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--orange)"></div>Kan beter</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>Past niet</div>
       </div>
-      <canvas id="chart-fit" style="max-height:520px"></canvas>`;
+      <canvas id="chart-fit" style="max-height:540px"></canvas>`;
     s.appendChild(chartCard);
 
-    // Table below
     const tableCard = document.createElement('div');
     tableCard.className = 'chart-card';
-    tableCard.innerHTML = `<div class="chart-title"><span class="chart-title-dot"></span>Overzichtstabel</div>`;
-    const table = buildFitTable(stats.constructs);
-    tableCard.appendChild(table);
+    tableCard.innerHTML = `<div class="chart-title"><span class="chart-dot"></span>Overzichtstabel met benchmark</div>`;
+    tableCard.appendChild(buildFitTable(firm.constructs, bench.constructs));
     s.appendChild(tableCard);
 
-    // Build chart after DOM insert (needs canvas to be in DOM)
     requestAnimationFrame(() => {
       const ctx = document.getElementById('chart-fit').getContext('2d');
-      const labels = stats.constructs.map(c => c.name);
       const chart = new Chart(ctx, {
         type: 'bar',
         data: {
-          labels,
+          labels: firm.constructs.map(c => c.name),
           datasets: [
-            { label: 'Past goed',  data: stats.constructs.map(c => c.goed),  backgroundColor: '#1A9959', borderWidth: 0 },
-            { label: 'Kan beter',  data: stats.constructs.map(c => c.beter), backgroundColor: '#D4680A', borderWidth: 0 },
-            { label: 'Past niet',  data: stats.constructs.map(c => c.niet),  backgroundColor: '#C0392B', borderWidth: 0 },
+            { label:'Past goed',  data: firm.constructs.map(c=>c.goed),  backgroundColor:'#1A9959', borderWidth:0 },
+            { label:'Kan beter',  data: firm.constructs.map(c=>c.beter), backgroundColor:'#D4680A', borderWidth:0 },
+            { label:'Past niet',  data: firm.constructs.map(c=>c.niet),  backgroundColor:'#C0392B', borderWidth:0 },
           ]
         },
         options: {
-          indexAxis: 'y',
-          responsive: true,
+          indexAxis:'y', responsive:true,
           scales: {
-            x: { stacked: true, max: 1, ticks: { format: { style: 'percent' }, font: { size: 10 } }, grid: { color: '#EEF0F5' } },
-            y: { stacked: true, ticks: { font: { size: 10 }, color: '#0F1F3D' }, grid: { display: false } }
+            x:{ stacked:true, max:1, ticks:{callback:v=>pct(v)+'%',font:{size:9}}, grid:{color:'#ecdde9'} },
+            y:{ stacked:true, ticks:{font:{size:9},color:'#6f3364'}, grid:{display:false} }
           },
-          plugins: {
-            legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 16 } },
-            tooltip: {
-              callbacks: {
-                label: ctx => ` ${ctx.dataset.label}: ${pct(ctx.raw)}%`
-              }
-            }
+          plugins:{
+            legend:{ position:'bottom', labels:{font:{size:10},padding:14} },
+            tooltip:{ callbacks:{ label: ctx=>` ${ctx.dataset.label}: ${pct(ctx.raw)}%` } }
           }
         }
       });
@@ -762,17 +938,19 @@ function renderDashboard(stats, filename) {
     });
   }));
 
-  // ── Section 2: Vertrekrisico ──────────────────────────────────────
+  // ── Section 2: Vertrekrisico ────────────────────────────────────────
   el.appendChild(makeSection('2', 'Vertrekrisico',
-    'Percentage dat overweegt te vertrekken als het construct niet verandert', s => {
+    '% overweegt vertrek als construct niet verbetert', s => {
 
-    const withVert = stats.constructs
-      .filter(c => c.vert !== null && c.vert > 0)
-      .sort((a, b) => b.vert - a.vert);
+    const withVert = firm.constructs
+      .filter(c => c.vert !== null && (c.goed < 1))
+      .sort((a,b) => b.vert - a.vert);
+    const benchMap = Object.fromEntries(bench.constructs.map(c=>[c.name,c]));
 
     const grid = document.createElement('div');
     grid.className = 'vertrek-grid';
     withVert.forEach(c => {
+      const bv = benchMap[c.name]?.vert ?? 0;
       const card = document.createElement('div');
       card.className = 'vertrek-card';
       card.innerHTML = `
@@ -781,51 +959,50 @@ function renderDashboard(stats, filename) {
         <div class="vertrek-bar-wrap">
           <div class="vertrek-bar-fill" style="width:${pct(c.vert)}%"></div>
         </div>
-        <div style="font-size:0.72rem;color:var(--muted)">${c.cat}</div>`;
+        <div style="font-size:0.7rem;color:var(--muted)">
+          ${c.cat} &nbsp;·&nbsp; Gem: ${pct(bv)}%
+        </div>`;
       grid.appendChild(card);
     });
-    if (withVert.length === 0) {
-      grid.innerHTML = '<p style="color:var(--muted);font-size:0.85rem">Geen constructen met vertrekrisico data.</p>';
+    if (!withVert.length) {
+      grid.innerHTML = '<p style="color:var(--muted);font-size:0.85rem">Geen vertrekrisico-data beschikbaar.</p>';
     }
 
-    const chartCard = document.createElement('div');
-    chartCard.className = 'chart-card';
-    chartCard.innerHTML = `<div class="chart-title"><span class="chart-title-dot red"></span>Vertrekrisico per construct</div>`;
-    chartCard.appendChild(grid);
-    s.appendChild(chartCard);
+    const cc1 = document.createElement('div');
+    cc1.className = 'chart-card';
+    cc1.innerHTML = `<div class="chart-title"><span class="chart-dot red"></span>Vertrekrisico per construct</div>`;
+    cc1.appendChild(grid);
+    s.appendChild(cc1);
 
-    // Also add a bar chart
-    const chartCard2 = document.createElement('div');
-    chartCard2.className = 'chart-card';
-    chartCard2.innerHTML = `
-      <div class="chart-title"><span class="chart-title-dot red"></span>Vergelijking vertrekrisico</div>
-      <canvas id="chart-vertrek" style="max-height:340px"></canvas>`;
-    s.appendChild(chartCard2);
+    const cc2 = document.createElement('div');
+    cc2.className = 'chart-card';
+    cc2.innerHTML = `
+      <div class="chart-title"><span class="chart-dot red"></span>Vergelijking met steekproefgemiddelde</div>
+      <canvas id="chart-vertrek" style="max-height:360px"></canvas>`;
+    s.appendChild(cc2);
 
     requestAnimationFrame(() => {
       const ctx = document.getElementById('chart-vertrek').getContext('2d');
       const chart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: withVert.map(c => c.name),
-          datasets: [{
-            label: '% overweegt vertrek',
-            data: withVert.map(c => c.vert),
-            backgroundColor: withVert.map(c => c.vert > 0.6 ? '#C0392B' : c.vert > 0.3 ? '#E67E22' : '#F1948A'),
-            borderWidth: 0,
-            borderRadius: 4,
-          }]
+        type:'bar',
+        data:{
+          labels: withVert.map(c=>c.name),
+          datasets:[
+            { label:`Bedrijf ${code}`, data:withVert.map(c=>c.vert),
+              backgroundColor:'#C0392B', borderWidth:0, borderRadius:4 },
+            { label:'Steekproefgemiddelde', data:withVert.map(c=>benchMap[c.name]?.vert??0),
+              backgroundColor:'rgba(183,145,182,0.3)', borderWidth:0, borderRadius:4 },
+          ]
         },
-        options: {
-          indexAxis: 'y',
-          responsive: true,
-          scales: {
-            x: { max: 1, ticks: { format: { style: 'percent' }, font: { size: 10 } }, grid: { color: '#EEF0F5' } },
-            y: { ticks: { font: { size: 10 } }, grid: { display: false } }
+        options:{
+          indexAxis:'y', responsive:true,
+          scales:{
+            x:{ max:1, ticks:{callback:v=>pct(v)+'%',font:{size:9}}, grid:{color:'#ecdde9'} },
+            y:{ ticks:{font:{size:9}}, grid:{display:false} }
           },
-          plugins: {
-            legend: { display: false },
-            tooltip: { callbacks: { label: ctx => ` ${pct(ctx.raw)}% overweegt vertrek` } }
+          plugins:{
+            legend:{ position:'bottom', labels:{font:{size:10},padding:14} },
+            tooltip:{ callbacks:{ label:ctx=>` ${ctx.dataset.label}: ${pct(ctx.raw)}%` } }
           }
         }
       });
@@ -833,156 +1010,151 @@ function renderDashboard(stats, filename) {
     });
   }));
 
-  // ── Section 3: Belang ranking ─────────────────────────────────────
-  el.appendChild(makeSection('3', 'Belang van elk aspect',
-    'Hoe belangrijk vinden medewerkers elk aspect, ongeacht huidige situatie (1–5)', s => {
+  // ── Section 3: Belang ───────────────────────────────────────────────
+  el.appendChild(makeSection('3', 'Belang per aspect',
+    'Hoe belangrijk vinden medewerkers elk aspect (schaal 1–5)', s => {
 
-    const sorted = [...stats.constructs].sort((a, b) => b.lk - a.lk);
+    const sorted    = [...firm.constructs].sort((a,b)=>b.lk-a.lk);
+    const benchMap  = Object.fromEntries(bench.constructs.map(c=>[c.name,c]));
 
     const twoCol = document.createElement('div');
     twoCol.className = 'two-col';
 
-    // Left: list
     const listCard = document.createElement('div');
     listCard.className = 'chart-card';
-    listCard.innerHTML = `<div class="chart-title"><span class="chart-title-dot" style="background:var(--blue)"></span>Ranking belang</div>`;
+    listCard.innerHTML = `<div class="chart-title"><span class="chart-dot yellow"></span>Ranking — bedrijf vs. steekproef</div>`;
     const list = document.createElement('div');
     list.className = 'belang-list';
-    sorted.forEach((c, idx) => {
+    sorted.forEach((c,idx) => {
+      const bl = benchMap[c.name]?.lk ?? 0;
       const row = document.createElement('div');
       row.className = 'belang-row';
       row.innerHTML = `
-        <div class="belang-rank">${idx + 1}</div>
-        <div class="belang-name">${c.name}</div>
+        <div class="belang-rank">${idx+1}</div>
+        <div class="belang-name" style="color:${CAT_COLOR[c.cat]}">${c.name}</div>
         <div class="belang-bar-wrap">
-          <div class="belang-bar-fill" style="width:${(c.lk/5)*100}%;background:${CAT_COLORS[c.cat]}"></div>
+          <div class="belang-bar-fill"  style="width:${(c.lk/5)*100}%;background:${CAT_COLOR[c.cat]}"></div>
+          <div class="belang-bar-bench" style="width:${(bl/5)*100}%;background:var(--purple-soft)"></div>
         </div>
         <div class="belang-score">${fmt1(c.lk)}</div>`;
       list.appendChild(row);
     });
     listCard.appendChild(list);
 
-    // Right: radar chart per category
     const radarCard = document.createElement('div');
     radarCard.className = 'chart-card';
     radarCard.innerHTML = `
-      <div class="chart-title"><span class="chart-title-dot" style="background:var(--blue)"></span>Gemiddeld belang per categorie</div>
-      <canvas id="chart-belang-cat" style="max-height:300px"></canvas>`;
+      <div class="chart-title"><span class="chart-dot yellow"></span>Belang per categorie</div>
+      <canvas id="chart-radar" style="max-height:300px"></canvas>`;
 
     twoCol.appendChild(listCard);
     twoCol.appendChild(radarCard);
     s.appendChild(twoCol);
 
     requestAnimationFrame(() => {
-      const cats = [...new Set(CONSTRUCTS.map(c => c.cat))];
-      const catAvgs = cats.map(cat => {
-        const vals = stats.constructs.filter(c => c.cat === cat).map(c => c.lk);
-        return avg(vals);
-      });
-      const ctx = document.getElementById('chart-belang-cat').getContext('2d');
+      const cats    = [...new Set(CONSTRUCTS.map(c=>c.cat))];
+      const firmAvg = cats.map(cat => avg(firm.constructs.filter(c=>c.cat===cat).map(c=>c.lk)));
+      const benchAvg= cats.map(cat => avg(bench.constructs.filter(c=>c.cat===cat).map(c=>c.lk)));
+      const ctx = document.getElementById('chart-radar').getContext('2d');
       const chart = new Chart(ctx, {
-        type: 'radar',
-        data: {
-          labels: cats,
-          datasets: [{
-            label: 'Gem. belang',
-            data: catAvgs,
-            backgroundColor: 'rgba(27,79,216,0.12)',
-            borderColor: '#1B4FD8',
-            borderWidth: 2,
-            pointBackgroundColor: '#1B4FD8',
-            pointRadius: 4,
-          }]
+        type:'radar',
+        data:{
+          labels:cats,
+          datasets:[
+            { label:`Bedrijf ${code}`, data:firmAvg,
+              backgroundColor:'rgba(245,195,35,0.18)', borderColor:'#c99b00',
+              borderWidth:2, pointBackgroundColor:'#c99b00', pointRadius:4 },
+            { label:'Steekproefgemiddelde', data:benchAvg,
+              backgroundColor:'rgba(183,145,182,0.15)', borderColor:'rgba(183,145,182,0.7)',
+              borderWidth:1.5, pointBackgroundColor:'#b791b6', pointRadius:3,
+              borderDash:[4,3] },
+          ]
         },
-        options: {
-          responsive: true,
-          scales: {
-            r: { min: 0, max: 5, ticks: { stepSize: 1, font: { size: 9 } },
-                 pointLabels: { font: { size: 10 } }, grid: { color: '#EEF0F5' } }
-          },
-          plugins: { legend: { display: false } }
+        options:{
+          responsive:true,
+          scales:{ r:{ min:0, max:5, ticks:{stepSize:1,font:{size:9}},
+                       pointLabels:{font:{size:10}}, grid:{color:'#ecdde9'} } },
+          plugins:{ legend:{ position:'bottom', labels:{font:{size:10},padding:14} } }
         }
       });
       chartInstances.push(chart);
     });
   }));
 
-  // ── Section 4: Gewenste richting ──────────────────────────────────
+  // ── Section 4: Richting ─────────────────────────────────────────────
   el.appendChild(makeSection('4', 'Gewenste richting',
-    'Voor constructen die niet passen en bidirectioneel zijn: meer of minder?', s => {
+    'Meer of minder — voor bidirectionele constructen', s => {
 
-    const bidir = stats.constructs.filter(c => c.bidir && (c.meer !== null || c.minder !== null)
-                                               && (c.meer + c.minder) > 0);
+    const bidir = firm.constructs.filter(c=>c.bidir && c.meer!==null && (c.meer+c.minder)>0);
 
     const grid = document.createElement('div');
     grid.className = 'richting-grid';
     bidir.forEach(c => {
-      const total = (c.meer || 0) + (c.minder || 0);
-      const meerPct   = total ? (c.meer   || 0) / total : 0;
-      const minderPct = total ? (c.minder || 0) / total : 0;
+      const total = c.meer + c.minder;
       const card = document.createElement('div');
       card.className = 'richting-card';
       card.innerHTML = `
         <div class="richting-name">${c.name}</div>
-        <div class="richting-bars">
+        <div>
           <div class="richting-row">
             <div class="richting-label">Meer</div>
             <div class="richting-bar-wrap">
-              <div class="richting-bar-meer" style="width:${meerPct*100}%"></div>
+              <div class="richting-bar-meer" style="width:${total?c.meer/total*100:0}%"></div>
             </div>
-            <div class="richting-n" style="color:var(--green)">${c.meer || 0}</div>
+            <div class="richting-n" style="color:var(--green)">${c.meer}</div>
           </div>
           <div class="richting-row">
             <div class="richting-label">Minder</div>
             <div class="richting-bar-wrap">
-              <div class="richting-bar-minder" style="width:${minderPct*100}%"></div>
+              <div class="richting-bar-minder" style="width:${total?c.minder/total*100:0}%"></div>
             </div>
-            <div class="richting-n" style="color:var(--orange)">${c.minder || 0}</div>
+            <div class="richting-n" style="color:var(--orange)">${c.minder}</div>
           </div>
         </div>`;
       grid.appendChild(card);
     });
+    if (!bidir.length) {
+      grid.innerHTML = '<p style="color:var(--muted);font-size:0.85rem">Geen richting-data beschikbaar.</p>';
+    }
 
-    const card = document.createElement('div');
-    card.className = 'chart-card';
-    card.innerHTML = `<div class="chart-title"><span class="chart-title-dot green"></span>Meer of minder per construct</div>`;
-    card.appendChild(grid);
+    const cc1 = document.createElement('div');
+    cc1.className = 'chart-card';
+    cc1.innerHTML = `<div class="chart-title"><span class="chart-dot green"></span>Gewenste richting per construct</div>`;
+    cc1.appendChild(grid);
 
-    // Diverging bar chart
-    const chartCard = document.createElement('div');
-    chartCard.className = 'chart-card';
-    chartCard.innerHTML = `
-      <div class="chart-title"><span class="chart-title-dot green"></span>Divergerende weergave</div>
+    const cc2 = document.createElement('div');
+    cc2.className = 'chart-card';
+    cc2.innerHTML = `
+      <div class="chart-title"><span class="chart-dot green"></span>Divergerende weergave</div>
       <div class="legend">
         <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Meer</div>
         <div class="legend-item"><div class="legend-dot" style="background:var(--orange)"></div>Minder</div>
       </div>
       <canvas id="chart-richting" style="max-height:380px"></canvas>`;
 
-    s.appendChild(card);
-    s.appendChild(chartCard);
+    s.appendChild(cc1);
+    s.appendChild(cc2);
 
     requestAnimationFrame(() => {
       const ctx = document.getElementById('chart-richting').getContext('2d');
       const chart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: bidir.map(c => c.name),
-          datasets: [
-            { label: 'Meer',   data: bidir.map(c => c.meer   || 0), backgroundColor: '#1A9959', borderWidth: 0, borderRadius: 3 },
-            { label: 'Minder', data: bidir.map(c => -(c.minder || 0)), backgroundColor: '#D4680A', borderWidth: 0, borderRadius: 3 },
+        type:'bar',
+        data:{
+          labels: bidir.map(c=>c.name),
+          datasets:[
+            { label:'Meer',   data:bidir.map(c=>c.meer),    backgroundColor:'#1A9959', borderWidth:0, borderRadius:3 },
+            { label:'Minder', data:bidir.map(c=>-(c.minder)), backgroundColor:'#D4680A', borderWidth:0, borderRadius:3 },
           ]
         },
-        options: {
-          indexAxis: 'y',
-          responsive: true,
-          scales: {
-            x: { stacked: true, ticks: { callback: v => Math.abs(v), font: { size: 10 } }, grid: { color: '#EEF0F5' } },
-            y: { stacked: true, ticks: { font: { size: 10 } }, grid: { display: false } }
+        options:{
+          indexAxis:'y', responsive:true,
+          scales:{
+            x:{ stacked:true, ticks:{callback:v=>Math.abs(v),font:{size:9}}, grid:{color:'#ecdde9'} },
+            y:{ stacked:true, ticks:{font:{size:9}}, grid:{display:false} }
           },
-          plugins: {
-            legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 16 } },
-            tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: ${Math.abs(ctx.raw)}` } }
+          plugins:{
+            legend:{position:'bottom',labels:{font:{size:10},padding:14}},
+            tooltip:{ callbacks:{ label:ctx=>` ${ctx.dataset.label}: ${Math.abs(ctx.raw)}` } }
           }
         }
       });
@@ -990,41 +1162,35 @@ function renderDashboard(stats, filename) {
     });
   }));
 
-  // ── Section 5: Open antwoorden ────────────────────────────────────
+  // ── Section 5: Open antwoorden ──────────────────────────────────────
   el.appendChild(makeSection('5', 'Open antwoorden',
-    'Kwalitatieve opmerkingen van respondenten', s => {
+    `Kwalitatieve opmerkingen van respondenten bij bedrijf ${code}`, s => {
 
     const card = document.createElement('div');
     card.className = 'chart-card';
-    card.innerHTML = `<div class="chart-title"><span class="chart-title-dot" style="background:var(--muted)"></span>Opmerkingen per categorie</div>`;
+    card.innerHTML = `<div class="chart-title"><span class="chart-dot" style="background:var(--muted)"></span>Opmerkingen per categorie</div>`;
 
     const grid = document.createElement('div');
     grid.className = 'open-grid';
-
-    const cols = [
-      { key: 'goed',  label: 'Past goed — niet benoemd', cls: 'goed' },
-      { key: 'beter', label: 'Kan beter — niet benoemd',  cls: 'beter' },
-      { key: 'niet',  label: 'Past niet — niet benoemd',  cls: 'niet' },
-    ];
-
-    cols.forEach(col => {
+    [
+      { key:'goed',  label:'Past goed — extra opmerkingen', cls:'goed' },
+      { key:'beter', label:'Kan beter — extra opmerkingen', cls:'beter' },
+      { key:'niet',  label:'Past niet — extra opmerkingen', cls:'niet' },
+    ].forEach(col => {
       const colEl = document.createElement('div');
-      const hdr = document.createElement('div');
-      hdr.className = `open-col-header ${col.cls}`;
+      const hdr   = document.createElement('div');
+      hdr.className = `open-col-hdr ${col.cls}`;
       hdr.textContent = col.label;
       colEl.appendChild(hdr);
-
-      const items = stats.open[col.key];
-      if (items.length === 0) {
-        const empty = document.createElement('div');
-        empty.className = 'open-empty';
-        empty.textContent = 'Geen opmerkingen.';
-        colEl.appendChild(empty);
+      const items = firm.open[col.key];
+      if (!items.length) {
+        const e = document.createElement('div');
+        e.className = 'open-empty'; e.textContent = 'Geen opmerkingen.';
+        colEl.appendChild(e);
       } else {
         items.forEach(txt => {
           const q = document.createElement('div');
-          q.className = 'open-quote';
-          q.textContent = String(txt);
+          q.className = 'open-quote'; q.textContent = String(txt);
           colEl.appendChild(q);
         });
       }
@@ -1036,8 +1202,8 @@ function renderDashboard(stats, filename) {
   }));
 }
 
-// ── Helper: section wrapper ─────────────────────────────────────────
-function makeSection(num, title, sub, renderFn) {
+// ── helpers ──────────────────────────────────────────────────────────
+function makeSection(num, title, sub, fn) {
   const sec = document.createElement('div');
   sec.className = 'section';
   sec.innerHTML = `
@@ -1048,50 +1214,45 @@ function makeSection(num, title, sub, renderFn) {
         <div class="section-sub">${sub}</div>
       </div>
     </div>`;
-  renderFn(sec);
+  fn(sec);
   return sec;
 }
 
-// ── Helper: fit table ──────────────────────────────────────────────
-function buildFitTable(constructs) {
+function buildFitTable(firmCs, benchCs) {
+  const bMap = Object.fromEntries(benchCs.map(c=>[c.name,c]));
   const table = document.createElement('table');
   table.className = 'fit-table';
-  table.innerHTML = `
-    <thead><tr>
-      <th>Construct</th>
-      <th>Categorie</th>
-      <th class="right">Past goed</th>
-      <th class="right">Kan beter</th>
-      <th class="right">Past niet</th>
-      <th>Verdeling</th>
-      <th class="right">Belang</th>
-    </tr></thead>`;
+  table.innerHTML = `<thead><tr>
+    <th>Construct</th><th>Categorie</th>
+    <th class="right">Past goed</th><th class="right">Kan beter</th><th class="right">Past niet</th>
+    <th>Verdeling</th><th class="right">Belang</th>
+  </tr></thead>`;
   const tbody = document.createElement('tbody');
-
   let lastCat = null;
-  constructs.forEach((c, i) => {
+  firmCs.forEach((c,i) => {
     if (c.cat !== lastCat) {
-      const catRow = document.createElement('tr');
-      catRow.className = 'cat-row';
-      catRow.innerHTML = `<td colspan="7">${c.cat}</td>`;
-      tbody.appendChild(catRow);
-      lastCat = c.cat;
+      const cr = document.createElement('tr');
+      cr.className = 'cat-row';
+      cr.innerHTML = `<td colspan="7">${c.cat}</td>`;
+      tbody.appendChild(cr); lastCat = c.cat;
     }
+    const b = bMap[c.name] || {};
     const tr = document.createElement('tr');
+    tr.className = 'data-row';
     tr.innerHTML = `
-      <td style="font-weight:500">${c.name}</td>
-      <td><span class="cat-badge" style="background:${CAT_BG[c.cat]};color:${CAT_COLORS[c.cat]}">${c.cat}</span></td>
-      <td class="right pct-green">${pct(c.goed)}%</td>
-      <td class="right pct-orange">${pct(c.beter)}%</td>
-      <td class="right pct-red">${pct(c.niet)}%</td>
-      <td class="bar-cell">
+      <td style="font-weight:500;color:var(--purple)">${c.name}</td>
+      <td><span class="cat-badge" style="background:${CAT_BG[c.cat]};color:${CAT_COLOR[c.cat]}">${c.cat}</span></td>
+      <td class="right pct-green">${pct(c.goed)}%${delta(c.goed,b.goed||0)}</td>
+      <td class="right pct-orange">${pct(c.beter)}%${delta(-(c.beter),(-(b.beter||0)))}</td>
+      <td class="right pct-red">${pct(c.niet)}%${delta(-(c.niet),(-(b.niet||0)))}</td>
+      <td>
         <div class="fit-bar">
-          <div class="fit-bar-goed"   style="width:${pct(c.goed)}%"></div>
-          <div class="fit-bar-beter"  style="width:${pct(c.beter)}%"></div>
-          <div class="fit-bar-niet"   style="width:${pct(c.niet)}%"></div>
+          <div class="fit-bar-goed"  style="width:${pct(c.goed)}%"></div>
+          <div class="fit-bar-beter" style="width:${pct(c.beter)}%"></div>
+          <div class="fit-bar-niet"  style="width:${pct(c.niet)}%"></div>
         </div>
       </td>
-      <td class="right" style="font-weight:600">${fmt1(c.lk)}</td>`;
+      <td class="right" style="font-weight:600;color:var(--purple)">${fmt1(c.lk)}</td>`;
     tbody.appendChild(tr);
   });
   table.appendChild(tbody);
